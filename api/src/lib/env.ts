@@ -1,9 +1,18 @@
-import 'dotenv/config'
-
+import { config } from 'dotenv'
 import { z } from 'zod'
 
+const envResult = config()
+if (envResult.error) {
+  throw new Error('⚠️ Failed to load .env file')
+}
+
 const environmentSchema = z.object({
-  PORT: z.coerce.number(),
+  NODE_ENV: z.enum(['development', 'production']).default('development'),
+  PORT: z
+    .string()
+    .min(1, { message: 'Port is required' })
+    .transform((val) => parseInt(val, 10))
+    .pipe(z.number().positive()),
 })
 
 function validateEnvironment(): z.infer<typeof environmentSchema> {
@@ -11,10 +20,8 @@ function validateEnvironment(): z.infer<typeof environmentSchema> {
   const parsed = environmentSchema.safeParse(process.env)
 
   if (!parsed.success) {
-    console.error(
-      '❌ Invalid environment variables:',
-      parsed.error.flatten().fieldErrors,
-    )
+    console.error('❌ Invalid environment variables:')
+    console.error(JSON.stringify(parsed.error.format(), null, 2))
     throw new Error('Invalid environment variables')
   }
 
