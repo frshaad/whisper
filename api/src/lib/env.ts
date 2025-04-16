@@ -13,6 +13,11 @@ const environmentSchema = z.object({
     .min(1, { message: 'Port is required' })
     .transform((val) => parseInt(val, 10))
     .pipe(z.number().positive()),
+  HASH_SALT_FACTOR: z
+    .string()
+    .min(1, { message: 'Hash salt factor is required' })
+    .transform((val) => parseInt(val, 10))
+    .pipe(z.number().positive()),
   DB_URI: z.string().min(1, { message: 'Database URI is required' }).url(),
 })
 
