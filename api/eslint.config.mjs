@@ -1,6 +1,7 @@
 import js from '@eslint/js'
 import { defineConfig } from 'eslint/config'
 import prettierConfig from 'eslint-config-prettier'
+import nodePlugin from 'eslint-plugin-n'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
@@ -16,6 +17,12 @@ export default defineConfig([
     languageOptions: { globals: globals.node },
   },
   tseslint.configs.recommended,
+  {
+    plugins: { n: nodePlugin },
+    rules: {
+      'n/no-process-env': 'error',
+    },
+  },
   {
     plugins: {
       'simple-import-sort': simpleImportSort,
