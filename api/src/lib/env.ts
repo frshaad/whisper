@@ -19,6 +19,7 @@ const environmentSchema = z.object({
     .transform((val) => parseInt(val, 10))
     .pipe(z.number().positive()),
   DB_URI: z.string().min(1, { message: 'Database URI is required' }).url(),
+  JWT_SECRET: z.string().min(1, { message: 'JWT Secret Key is required' }),
 })
 
 function validateEnvironment(): z.infer<typeof environmentSchema> {

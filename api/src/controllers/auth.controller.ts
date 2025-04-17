@@ -1,10 +1,26 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Request, Response } from 'express'
 
-export async function logIn(req: Request, res: Response) {
-  res.send('Login Route')
-}
+import { signupService } from '@/services/auth.services'
 
 export async function signUp(req: Request, res: Response) {
+  try {
+    const user = await signupService(req, res)
+    const { password, ...userWithoutPassword } = user.toObject()
+    res.status(201).json({ status: 'success', user: userWithoutPassword })
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({ status: 'failed', message: error.message })
+    }
+
+    res.status(500).json({
+      status: 'failed',
+      message: 'Something went wrong. Please try again later.',
+    })
+  }
+}
+
+export async function logIn(req: Request, res: Response) {
   res.send('Login Route')
 }
 
