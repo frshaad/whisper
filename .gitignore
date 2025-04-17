@@ -134,3 +134,5 @@ tmp/
 # Files that might appear when using macOS with network shares
 .Spotlight-V100
 .Trashes
+
+notes.md
