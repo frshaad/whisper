@@ -33,5 +33,12 @@ export async function logIn(req: Request, res: Response) {
 }
 
 export async function logOut(req: Request, res: Response) {
-  res.send('Login Route')
+  try {
+    res.cookie('jwt', '', { maxAge: 0 })
+    res
+      .status(200)
+      .json({ status: 'success', message: 'User logged out Successfully' })
+  } catch (error) {
+    handleError(error, res)
+  }
 }
