@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Request, Response } from 'express'
+import { ZodError } from 'zod'
 
 import { AppError } from '@/lib/errors'
 import { generateToken } from '@/lib/utils'
@@ -15,18 +16,29 @@ export async function signUp(req: Request, res: Response) {
     const { password, ...userWithoutPassword } = user.toObject()
     res.status(201).json({ status: 'success', user: userWithoutPassword })
   } catch (error) {
+    if (error instanceof ZodError) {
+      res.status(400).json({
+        status: 'failed',
+        message: 'Invalid input',
+        errors: error.errors.map((err) => ({
+          field: err.path.join('.'),
+          message: err.message,
+        })),
+      })
+    }
+
     if (error instanceof AppError) {
       res.status(error.statusCode).json({
         status: 'failed',
         message: error.message,
         ...(error.errors && { errors: error.errors }),
       })
-    } else {
-      res.status(500).json({
-        status: 'failed',
-        message: 'Something went wrong. Please try again later.',
-      })
     }
+
+    res.status(500).json({
+      status: 'failed',
+      message: 'Something went wrong. Please try again later.',
+    })
   }
 }
 
