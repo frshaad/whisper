@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { Request, RequestHandler, Response } from 'express'
+import type { Request, Response } from 'express'
 
 import { AppError } from '@/lib/errors'
 import { generateToken } from '@/lib/utils'
+import { signupInputsSchema } from '@/lib/zod-schemas'
 import { signupService } from '@/services/auth.services'
 
 export async function signUp(req: Request, res: Response) {
   try {
-    const user = await signupService(req.body)
+    const parsedInputs = signupInputsSchema.parse(req.body)
+    const user = await signupService(parsedInputs)
     generateToken(user._id, res)
 
     const { password, ...userWithoutPassword } = user.toObject()

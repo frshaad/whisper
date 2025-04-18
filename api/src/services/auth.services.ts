@@ -2,7 +2,6 @@ import { ZodError } from 'zod'
 
 import { AppError } from '@/lib/errors'
 import { hashPassword } from '@/lib/utils'
-import { signupInputsSchema } from '@/lib/zod-schemas'
 import { User } from '@/models/user.model'
 
 type SignupInputs = {
@@ -11,10 +10,12 @@ type SignupInputs = {
   password: string
 }
 
-export async function signupService(inputs: SignupInputs) {
+export async function signupService({
+  email,
+  fullname,
+  password,
+}: SignupInputs) {
   try {
-    const { email, fullname, password } = signupInputsSchema.parse(inputs)
-
     const existingUser = await User.findOne({ email })
     if (existingUser) {
       throw new AppError(400, 'Email is already in use')
