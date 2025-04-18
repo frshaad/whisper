@@ -2,11 +2,14 @@
 import type { Request, Response } from 'express'
 
 import { AppError } from '@/lib/errors'
+import { generateToken } from '@/lib/utils'
 import { signupService } from '@/services/auth.services'
 
 export async function signUp(req: Request, res: Response) {
   try {
-    const user = await signupService(req, res)
+    const user = await signupService(req.body)
+    generateToken(user._id, res)
+
     const { password, ...userWithoutPassword } = user.toObject()
     res.status(201).json({ status: 'success', user: userWithoutPassword })
   } catch (error) {
