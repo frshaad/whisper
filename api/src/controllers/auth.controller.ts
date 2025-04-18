@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { Request, Response } from 'express'
+import type { Request, RequestHandler, Response } from 'express'
 
 import { AppError } from '@/lib/errors'
 import { generateToken } from '@/lib/utils'
@@ -14,17 +14,17 @@ export async function signUp(req: Request, res: Response) {
     res.status(201).json({ status: 'success', user: userWithoutPassword })
   } catch (error) {
     if (error instanceof AppError) {
-      return res.status(error.statusCode).json({
+      res.status(error.statusCode).json({
         status: 'failed',
         message: error.message,
         ...(error.errors && { errors: error.errors }),
       })
+    } else {
+      res.status(500).json({
+        status: 'failed',
+        message: 'Something went wrong. Please try again later.',
+      })
     }
-
-    res.status(500).json({
-      status: 'failed',
-      message: 'Something went wrong. Please try again later.',
-    })
   }
 }
 
