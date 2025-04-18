@@ -11,6 +11,13 @@ export async function hashPassword(password: string): Promise<string> {
   return await bcrypt.hash(password, salt)
 }
 
+export async function comparePasswords(
+  candidatePassword: string,
+  hashedPassword: string,
+) {
+  return await bcrypt.compare(candidatePassword, hashedPassword)
+}
+
 export function generateToken(id: Types.ObjectId, res: Response) {
   const token = jwt.sign({ id }, env.JWT_SECRET, {
     expiresIn: '30d',

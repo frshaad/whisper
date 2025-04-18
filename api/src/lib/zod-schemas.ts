@@ -1,9 +1,11 @@
 import z from 'zod'
 
 import {
+  FULLNAME_REGEX_PATTERN,
   MAX_FULLNAME_LENGTH,
   MIN_FULLNAME_LENGTH,
   MIN_PASSWORD_LENGTH,
+  PASSWORD_REGEX_PATTERN,
 } from '@/lib/constants'
 
 export const loginInputsSchema = z.object({
@@ -16,7 +18,7 @@ export const loginInputsSchema = z.object({
       `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
     )
     .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+      PASSWORD_REGEX_PATTERN,
       'Password must contain uppercase, lowercase, number and special character',
     ),
 })
@@ -34,7 +36,10 @@ export const signupInputsSchema = loginInputsSchema
         MAX_FULLNAME_LENGTH,
         `Name must not exceed ${MAX_FULLNAME_LENGTH} characters`,
       )
-      .regex(/^[a-zA-Z\s]*$/, 'Name can only contain letters and spaces'),
+      .regex(
+        FULLNAME_REGEX_PATTERN,
+        'Name can only contain letters and spaces',
+      ),
     confirmPassword: z.string().trim(),
   })
   .refine(({ password, confirmPassword }) => password == confirmPassword, {
