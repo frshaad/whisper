@@ -18,8 +18,8 @@ export async function comparePasswords(
   return await bcrypt.compare(candidatePassword, hashedPassword)
 }
 
-export function generateToken(id: Types.ObjectId, res: Response) {
-  const token = jwt.sign({ id }, env.JWT_SECRET, {
+export function generateToken(userId: Types.ObjectId, res: Response) {
+  const token = jwt.sign({ userId }, env.JWT_SECRET, {
     expiresIn: '30d',
   })
 
