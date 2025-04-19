@@ -63,3 +63,11 @@ export async function updateProfile(req: Request, res: Response) {
     handleError(error, res)
   }
 }
+
+export async function checkAuth(req: Request, res: Response) {
+  try {
+    res.status(200).json(req.user)
+  } catch (error) {
+    handleError(error, res)
+  }
+}

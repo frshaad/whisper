@@ -1,6 +1,7 @@
 import { Router } from 'express'
 
 import {
+  checkAuth,
   logIn,
   logOut,
   signUp,
@@ -18,5 +19,7 @@ router.post('/signup', signUp)
 router.post('/logout', logOut)
 
 router.put('/update-profile', authMiddleware, updateProfile)
+
+router.get('/check', authMiddleware, checkAuth)
 
 export default router
