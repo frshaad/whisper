@@ -33,7 +33,7 @@ export function generateToken(userId: Types.ObjectId, res: Response) {
 }
 
 export function sanitizeUser(
-  userDoc: Document<unknown, object, UserType> & UserType,
+  userDoc: Document<unknown, object, UserTypeWithId> & UserType,
 ): Omit<UserTypeWithId, 'password'> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, __v, ...safeUser } = userDoc.toObject()

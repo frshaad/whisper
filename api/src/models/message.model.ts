@@ -1,15 +1,15 @@
-import { type InferSchemaType, model, Schema } from 'mongoose'
+import { type InferSchemaType, model, Schema, Types } from 'mongoose'
 
 const messageSchema = new Schema(
   {
     senderId: {
-      type: Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'User',
       unique: true,
       required: true,
     },
     receiverId: {
-      type: Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'User',
       unique: true,
       required: true,
@@ -26,7 +26,7 @@ const Message = model('Message', messageSchema)
 
 type MessageType = InferSchemaType<typeof messageSchema>
 type MessageTypeWithId = InferSchemaType<typeof messageSchema> & {
-  _id: Schema.Types.ObjectId
+  _id: Types.ObjectId
 }
 
 export { Message, type MessageType, type MessageTypeWithId }
