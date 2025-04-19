@@ -46,3 +46,28 @@ export const signupInputsSchema = loginInputsSchema
     path: ['confirmPassword'],
     message: "Passwords don't match",
   })
+
+export const updateProfileInputSchema = z
+  .object({
+    profilePic: z.string().url().optional(),
+    fullname: z
+      .string()
+      .trim()
+      .min(
+        MIN_FULLNAME_LENGTH,
+        `Name must be at least ${MIN_FULLNAME_LENGTH} characters`,
+      )
+      .max(
+        MAX_FULLNAME_LENGTH,
+        `Name must not exceed ${MAX_FULLNAME_LENGTH} characters`,
+      )
+      .regex(FULLNAME_REGEX_PATTERN, 'Name can only contain letters and spaces')
+      .optional(),
+  })
+  .refine(
+    ({ fullname, profilePic }) =>
+      fullname !== undefined || profilePic !== undefined,
+    {
+      message: 'At least one of "Full Name" or "Profile Pic" must be provided.',
+    },
+  )
