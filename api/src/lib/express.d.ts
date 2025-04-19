@@ -1,12 +1,9 @@
-import type { Types } from 'mongoose'
-
-import type { UserType } from '../../schemas/user.schema'
+import type { UserTypeWithId } from '@/models/user.model'
 
 declare global {
   namespace Express {
     export interface Request {
-      user?: UserType
-      userId?: Types.ObjectId
+      user?: UserTypeWithId
     }
   }
 }

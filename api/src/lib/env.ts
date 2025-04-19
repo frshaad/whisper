@@ -20,6 +20,15 @@ const environmentSchema = z.object({
     .pipe(z.number().positive()),
   DB_URI: z.string().min(1, { message: 'Database URI is required' }).url(),
   JWT_SECRET: z.string().min(1, { message: 'JWT Secret Key is required' }),
+  CLOUDINARY_CLOUD_NAME: z
+    .string()
+    .min(1, { message: 'Cloudinary Cloud Name is required' }),
+  CLOUDINARY_API_KEY: z
+    .string()
+    .min(1, { message: 'Cloudinary Api Key is required' }),
+  CLOUDINARY_API_SECRET: z
+    .string()
+    .min(1, { message: 'Cloudinary Api Secret is required' }),
 })
 
 function validateEnvironment(): z.infer<typeof environmentSchema> {

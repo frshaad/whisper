@@ -1,10 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Request, Response } from 'express'
 
-import { handleError } from '@/lib/errors'
+import { AppError, handleError } from '@/lib/errors'
 import { generateToken } from '@/lib/utils'
-import { loginInputsSchema, signupInputsSchema } from '@/lib/zod-schemas'
-import { loginService, signupService } from '@/services/auth.services'
+import {
+  loginInputsSchema,
+  signupInputsSchema,
+  updateProfileInputSchema,
+} from '@/lib/zod-schemas'
+import {
+  loginService,
+  signupService,
+  updateProfileService,
+} from '@/services/auth.service'
 
 export async function signUp(req: Request, res: Response) {
   try {
@@ -12,8 +19,7 @@ export async function signUp(req: Request, res: Response) {
     const user = await signupService(parsedInputs)
     generateToken(user._id, res)
 
-    const { password, __v, ...userWithoutPassword } = user.toObject()
-    res.status(201).json({ status: 'success', user: userWithoutPassword })
+    res.status(201).json({ status: 'success', user })
   } catch (error) {
     handleError(error, res)
   }
@@ -25,8 +31,7 @@ export async function logIn(req: Request, res: Response) {
     const user = await loginService(parsedInputs)
     generateToken(user._id, res)
 
-    const { password, __v, ...userWithoutPassword } = user.toObject()
-    res.status(200).json({ status: 'success', user: userWithoutPassword })
+    res.status(200).json({ status: 'success', user })
   } catch (error) {
     handleError(error, res)
   }
@@ -38,6 +43,22 @@ export async function logOut(req: Request, res: Response) {
     res
       .status(200)
       .json({ status: 'success', message: 'User logged out Successfully' })
+  } catch (error) {
+    handleError(error, res)
+  }
+}
+
+export async function updateProfile(req: Request, res: Response) {
+  try {
+    const parsedInputs = updateProfileInputSchema.parse(req.body)
+    const userId = req.user?._id
+    if (!userId) {
+      throw new AppError(401, 'Access denied. User not found.')
+    }
+
+    const user = await updateProfileService(parsedInputs, userId)
+
+    res.status(200).json({ status: 'success', user })
   } catch (error) {
     handleError(error, res)
   }

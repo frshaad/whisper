@@ -7,4 +7,4 @@ export const PASSWORD_REGEX_PATTERN =
 
 // Auth rate limiter
 export const RATE_LIMIT_WINDOW = 15 * 60 * 1000 // 15 minutes
-export const RATE_LIMIT_COUNT = 5 // Limit each IP to 5 requests per window
+export const RATE_LIMIT_COUNT = 15 // Limit each IP to 5 requests per window
