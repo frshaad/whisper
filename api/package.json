@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "lint": "eslint . --fix",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "type-check": "tsc"
   },
   "keywords": [],
   "author": "",
