@@ -2,31 +2,17 @@ import { type InferSchemaType, model, Schema, Types } from 'mongoose'
 
 const messageSchema = new Schema(
   {
-    senderId: {
-      type: Types.ObjectId,
-      ref: 'User',
-      unique: true,
-      required: true,
-    },
-    receiverId: {
-      type: Types.ObjectId,
-      ref: 'User',
-      unique: true,
-      required: true,
-    },
+    senderId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    receiverId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     text: { type: String },
     image: { type: String },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true },
 )
 
 const Message = model('Message', messageSchema)
-
-type MessageType = InferSchemaType<typeof messageSchema>
-type MessageTypeWithId = InferSchemaType<typeof messageSchema> & {
+type MessageType = InferSchemaType<typeof messageSchema> & {
   _id: Types.ObjectId
 }
 
-export { Message, type MessageType, type MessageTypeWithId }
+export { Message, type MessageType }

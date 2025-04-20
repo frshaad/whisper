@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken'
 import type { Document, Types } from 'mongoose'
 
 import { env } from '@/lib/env'
-import type { UserType, UserTypeWithId } from '@/models/user.model'
+import { excludeFields } from '@/lib/helpers'
+import type { UserType } from '@/models/user.model'
 
 export async function hashPassword(password: string): Promise<string> {
   const saltFactor = env.HASH_SALT_FACTOR
@@ -33,9 +34,7 @@ export function generateToken(userId: Types.ObjectId, res: Response) {
 }
 
 export function sanitizeUser(
-  userDoc: Document<unknown, object, UserTypeWithId> & UserType,
-): Omit<UserTypeWithId, 'password'> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, __v, ...safeUser } = userDoc.toObject()
-  return safeUser
+  userDoc: Document<unknown, object, UserType> & UserType,
+): Omit<UserType, 'password'> {
+  return excludeFields(userDoc.toObject(), ['password', '__v'])
 }
