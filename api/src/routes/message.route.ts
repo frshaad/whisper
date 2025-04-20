@@ -1,10 +1,16 @@
 import { Router } from 'express'
 
-import { getAllMessagesWithUser } from '@/controllers/message.controller'
+import {
+  getAllMessagesWithUser,
+  sendMessage,
+} from '@/controllers/message.controller'
 import authMiddleware from '@/middlewares/auth-middleware'
 
 const router = Router()
 
-router.get('/:id', authMiddleware, getAllMessagesWithUser)
+router.use(authMiddleware)
+
+router.get('/:id', getAllMessagesWithUser)
+router.post('/send/:id', sendMessage)
 
 export default router

@@ -24,6 +24,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
+    "sanitize-html": "^2.16.0",
     "socket.io": "^4.8.1",
     "zod": "^3.24.2"
   },
@@ -33,6 +34,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/sanitize-html": "^2.15.0",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-n": "^17.17.0",

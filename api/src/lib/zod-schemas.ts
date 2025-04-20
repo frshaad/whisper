@@ -1,8 +1,10 @@
+import sanitizeHtml from 'sanitize-html'
 import z from 'zod'
 
 import {
   FULLNAME_REGEX_PATTERN,
   MAX_FULLNAME_LENGTH,
+  MAX_MESSAGE_LENGTH,
   MIN_FULLNAME_LENGTH,
   MIN_PASSWORD_LENGTH,
   PASSWORD_REGEX_PATTERN,
@@ -71,3 +73,25 @@ export const updateProfileInputSchema = z
       message: 'At least one of "Full Name" or "Profile Pic" must be provided.',
     },
   )
+
+export const messageSchema = z
+  .object({
+    text: z
+      .string()
+      .trim()
+      .max(
+        MAX_MESSAGE_LENGTH,
+        `Message must be less than ${MAX_MESSAGE_LENGTH} characters`,
+      )
+      .optional()
+      .transform((val) =>
+        val
+          ? sanitizeHtml(val, { allowedTags: [], allowedAttributes: {} })
+          : val,
+      ),
+    image: z.string().url('Invalid image URL').optional(),
+  })
+  .refine(({ image, text }) => Boolean(image) || Boolean(text), {
+    message: 'Either text or image is required',
+    path: ['text'], // or ['image']
+  })

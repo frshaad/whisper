@@ -1,9 +1,10 @@
 import bcrypt from 'bcryptjs'
 import type { Response } from 'express'
 import jwt from 'jsonwebtoken'
-import type { Document, Types } from 'mongoose'
+import { type Document, Types } from 'mongoose'
 
 import { env } from '@/lib/env'
+import { AppError } from '@/lib/errors'
 import { excludeFields } from '@/lib/helpers'
 import type { UserType } from '@/models/user.model'
 
@@ -37,4 +38,14 @@ export function sanitizeUser(
   userDoc: Document<unknown, object, UserType> & UserType,
 ): Omit<UserType, 'password'> {
   return excludeFields(userDoc.toObject(), ['password', '__v'])
+}
+
+export function validateId(
+  input: string | number | Types.ObjectId,
+): Types.ObjectId {
+  if (!Types.ObjectId.isValid(input)) {
+    throw new AppError(400, 'Invalid user ID')
+  }
+  const parsedId = new Types.ObjectId(input)
+  return parsedId
 }
