@@ -6,7 +6,7 @@ import { comparePasswords, hashPassword, sanitizeUser } from '@/lib/utils'
 import { User, type UserType } from '@/models/user.model'
 
 type LoginInputs = {
-  email: string
+  username: string
   password: string
 }
 
@@ -20,18 +20,18 @@ type UpdateProfileInputs = {
 }
 
 export async function signupService({
-  email,
+  username,
   fullname,
   password: inputPassword,
 }: SignupInputs) {
-  const existingUser = await User.findOne({ email })
+  const existingUser = await User.findOne({ username })
   if (existingUser) {
-    throw new AppError(400, 'Email is already in use')
+    throw new AppError(400, 'Username is already taken')
   }
 
   const hashedPassword = await hashPassword(inputPassword)
   const user = await User.create({
-    email,
+    username,
     fullname,
     password: hashedPassword,
   })
@@ -40,10 +40,10 @@ export async function signupService({
 }
 
 export async function loginService({
-  email,
+  username,
   password: inputPassword,
 }: LoginInputs) {
-  const user = await User.findOne({ email })
+  const user = await User.findOne({ username })
   if (!user) {
     throw new AppError(400, 'User does not exist')
   }

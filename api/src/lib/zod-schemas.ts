@@ -11,7 +11,11 @@ import {
 } from '@/lib/constants'
 
 export const loginInputsSchema = z.object({
-  email: z.string().trim().toLowerCase().email('Invalid email format'),
+  username: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(3, 'Username must be at least 3 characters'),
   password: z
     .string()
     .trim()
