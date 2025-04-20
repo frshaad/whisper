@@ -3,6 +3,7 @@ import express from 'express'
 import helmet from 'helmet'
 
 import authRouter from '@/routes/auth.route'
+import messageRouter from '@/routes/message.route'
 
 const app = express()
 
@@ -12,5 +13,6 @@ app.use(cookieParser())
 app.use(helmet())
 
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/message', messageRouter)
 
 export default app
