@@ -1,10 +1,8 @@
-import sanitizeHtml from 'sanitize-html'
 import z from 'zod'
 
 import {
   FULLNAME_REGEX_PATTERN,
   MAX_FULLNAME_LENGTH,
-  MAX_MESSAGE_LENGTH,
   MAX_USERNAME_LENGTH,
   MIN_FULLNAME_LENGTH,
   MIN_PASSWORD_LENGTH,
@@ -12,7 +10,7 @@ import {
   PASSWORD_REGEX_PATTERN,
 } from '@/lib/constants'
 
-const usernameSchema = z
+export const usernameSchema = z
   .string()
   .trim()
   .toLowerCase()
@@ -50,7 +48,7 @@ const usernameSchema = z
     }
   })
 
-const passwordSchema = z
+export const passwordSchema = z
   .string()
   .trim()
   .min(MIN_PASSWORD_LENGTH, {
@@ -61,7 +59,7 @@ const passwordSchema = z
       'Password must include uppercase, lowercase, number, and special character',
   })
 
-const fullnameSchema = z
+export const fullnameSchema = z
   .string()
   .trim()
   .min(MIN_FULLNAME_LENGTH, {
@@ -72,51 +70,4 @@ const fullnameSchema = z
   })
   .regex(FULLNAME_REGEX_PATTERN, {
     message: 'Name can only contain letters and spaces',
-  })
-
-export const loginInputsSchema = z.object({
-  username: usernameSchema,
-  password: passwordSchema,
-})
-
-export const signupInputsSchema = loginInputsSchema
-  .extend({
-    fullname: fullnameSchema,
-    confirmPassword: z.string().trim(),
-  })
-  .refine(({ password, confirmPassword }) => password === confirmPassword, {
-    path: ['confirmPassword'],
-    message: "Passwords don't match",
-  })
-
-export const updateProfileInputSchema = z
-  .object({
-    fullname: fullnameSchema.optional(),
-    profilePic: z
-      .string()
-      .url({ message: 'Profile picture must be a valid URL' })
-      .optional(),
-  })
-  .refine((data) => data.fullname || data.profilePic, {
-    message: 'At least one of fullname or profilePic must be provided',
-  })
-
-export const messageSchema = z
-  .object({
-    text: z
-      .string()
-      .trim()
-      .max(MAX_MESSAGE_LENGTH, {
-        message: `Message cannot exceed ${MAX_MESSAGE_LENGTH} characters`,
-      })
-      .optional()
-      .transform((val) =>
-        val
-          ? sanitizeHtml(val, { allowedTags: [], allowedAttributes: {} })
-          : undefined,
-      ),
-    image: z.string().trim().url('Invalid image URL').optional(),
-  })
-  .refine(({ image, text }) => Boolean(text || image), {
-    message: 'Either text or image is required',
   })
