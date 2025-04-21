@@ -91,5 +91,3 @@ export const profilePicSchema = z
   .string()
   .url({ message: 'Profile picture must be a valid URL' })
   .optional()
-
-export const statusEmojiSchema = z.string().optional()

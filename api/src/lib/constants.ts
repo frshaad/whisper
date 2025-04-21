@@ -9,7 +9,6 @@ export const USERNAME_REGEX_PATTERN = /^[a-z][a-z0-9_]*$/
 export const PASSWORD_REGEX_PATTERN =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]+$/
 export const PROFILE_PICTURE_REGEX_PATTERN = /^https?:\/\/.+\..+/
-export const EMAIL_REGEX_PATTERN = /^[\p{Emoji}]{1}$/u
 
 // Auth rate limiter
 export const RATE_LIMIT_WINDOW = 15 * 60 * 1000 // 15 minutes

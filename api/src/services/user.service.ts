@@ -9,12 +9,14 @@ export async function updateUserInfoService(
   inputs: UpdateUserInfoObj,
   userId: Types.ObjectId,
 ) {
-  const { fullname } = inputs
-
   const updatedFields: Partial<UserType> = {}
 
-  if (fullname) {
-    updatedFields.fullname = fullname
+  if (inputs.fullname) {
+    updatedFields.fullname = inputs.fullname
+  }
+
+  if (inputs.bio) {
+    updatedFields.bio = inputs.bio
   }
 
   const updatedUser = await User.findByIdAndUpdate(

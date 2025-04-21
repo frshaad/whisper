@@ -1,9 +1,6 @@
 import { type InferSchemaType, model, Schema, Types } from 'mongoose'
 
-import {
-  EMAIL_REGEX_PATTERN,
-  PROFILE_PICTURE_REGEX_PATTERN,
-} from '@/lib/constants'
+import { PROFILE_PICTURE_REGEX_PATTERN } from '@/lib/constants'
 
 const userSchema = new Schema(
   {
@@ -38,14 +35,6 @@ const userSchema = new Schema(
     },
     contacts: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
     blockedUsers: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
-    statusEmoji: {
-      type: String,
-      default: '',
-      validate: {
-        validator: (v: string) => v === '' || EMAIL_REGEX_PATTERN.test(v),
-        message: 'Status must be a single emoji',
-      },
-    },
     isOnline: {
       type: Boolean,
       default: false,
