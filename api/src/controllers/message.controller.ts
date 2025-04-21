@@ -17,7 +17,7 @@ export async function getAllMessagesWithUser(req: Request, res: Response) {
     }
 
     const messages = await getChatHistoryService(otherPartyUserId, userId)
-    res.status(200).json(messages)
+    res.status(200).json({ success: true, data: messages })
   } catch (error) {
     handleError(error, res)
   }
@@ -37,7 +37,7 @@ export async function sendMessage(req: Request, res: Response) {
       userId,
       parsedMessageData,
     )
-    res.status(201).json(message)
+    res.status(200).json({ success: true, data: message })
   } catch (error) {
     handleError(error, res)
   }

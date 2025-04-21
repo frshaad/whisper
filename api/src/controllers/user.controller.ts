@@ -14,7 +14,7 @@ export async function updateUserInfo(req: Request, res: Response) {
 
     const user = await updateUserInfoService(parsedInputs, userId)
 
-    res.status(200).json({ status: 'success', user })
+    res.status(200).json({ success: true, data: user })
   } catch (error) {
     handleError(error, res)
   }
