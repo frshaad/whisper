@@ -5,6 +5,7 @@ export const MAX_USERNAME_LENGTH = 20
 export const MIN_FULLNAME_LENGTH = 2
 export const MAX_FULLNAME_LENGTH = 50
 export const FULLNAME_REGEX_PATTERN = /^[a-zA-Z\s]*$/
+export const USERNAME_REGEX_PATTERN = /^[a-z][a-z0-9_]*$/
 export const PASSWORD_REGEX_PATTERN =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]+$/
 export const PROFILE_PICTURE_REGEX_PATTERN = /^https?:\/\/.+\..+/
