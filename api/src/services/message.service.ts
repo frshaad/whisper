@@ -3,7 +3,7 @@ import { Types } from 'mongoose'
 import cloudinary from '@/lib/cloudinary'
 import { AppError } from '@/lib/errors'
 import { validateId } from '@/lib/utils'
-import { messageSchema } from '@/lib/zod-schemas'
+import { messageSchema } from '@/lib/zod-schemas/message.zod'
 import { Message } from '@/models/message.model'
 
 export async function getChatHistoryService(
