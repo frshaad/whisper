@@ -13,7 +13,7 @@ export async function getAllMessagesWithUser(req: Request, res: Response) {
     const otherPartyUserId = validateId(req.params.id)
     const userId = req.userId
     if (!userId) {
-      throw new AppError(401, 'Access denied. Invalid token.')
+      throw new AppError(404, 'Access denied. Invalid token.')
     }
 
     const messages = await getChatHistoryService(otherPartyUserId, userId)
@@ -28,7 +28,7 @@ export async function sendMessage(req: Request, res: Response) {
     const otherPartyUserId = validateId(req.params.id)
     const userId = req.userId
     if (!userId) {
-      throw new AppError(401, 'Access denied. Invalid token.')
+      throw new AppError(404, 'Access denied. Invalid token.')
     }
     const parsedMessageData = messageSchema.parse(req.body)
 

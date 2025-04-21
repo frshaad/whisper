@@ -9,7 +9,7 @@ export async function updateUserInfo(req: Request, res: Response) {
     const parsedInputs = updateUserInfoSchema.parse(req.body)
     const userId = req.userId
     if (!userId) {
-      throw new AppError(401, 'Access denied. User not found.')
+      throw new AppError(404, 'Access denied. User not found.')
     }
 
     const user = await updateUserInfoService(parsedInputs, userId)
