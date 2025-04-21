@@ -1,9 +1,6 @@
-import type { Types } from 'mongoose'
-
-import cloudinary from '@/lib/cloudinary'
 import { AppError } from '@/lib/errors'
 import { comparePasswords, hashPassword, sanitizeUser } from '@/lib/utils'
-import { User, type UserType } from '@/models/user.model'
+import { User } from '@/models/user.model'
 
 type LoginInputs = {
   username: string
@@ -12,11 +9,6 @@ type LoginInputs = {
 
 type SignupInputs = LoginInputs & {
   fullname: string
-}
-
-type UpdateProfileInputs = {
-  profilePic?: string
-  fullname?: string
 }
 
 export async function signupService({
@@ -54,34 +46,4 @@ export async function loginService({
   }
 
   return sanitizeUser(user)
-}
-
-export async function updateProfileService(
-  inputs: UpdateProfileInputs,
-  userId: Types.ObjectId,
-) {
-  const { fullname, profilePic } = inputs
-
-  const updatedFields: Partial<UserType> = {}
-
-  if (profilePic) {
-    const uploadResponse = await cloudinary.uploader.upload(profilePic)
-    updatedFields.profilePic = uploadResponse.secure_url
-  }
-
-  if (fullname) {
-    updatedFields.fullname = fullname
-  }
-
-  const updatedUser = await User.findByIdAndUpdate(
-    userId,
-    { $set: updatedFields },
-    { new: true },
-  )
-
-  if (!updatedUser) {
-    throw new AppError(404, 'User not found')
-  }
-
-  return sanitizeUser(updatedUser)
 }
