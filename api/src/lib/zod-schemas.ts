@@ -115,7 +115,7 @@ export const messageSchema = z
           ? sanitizeHtml(val, { allowedTags: [], allowedAttributes: {} })
           : undefined,
       ),
-    image: z.string().url('Invalid image URL').optional(),
+    image: z.string().trim().url('Invalid image URL').optional(),
   })
   .refine(({ image, text }) => Boolean(text || image), {
     message: 'Either text or image is required',
