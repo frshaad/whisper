@@ -1,7 +1,9 @@
+import sanitizeHtml from 'sanitize-html'
 import z from 'zod'
 
 import {
   FULLNAME_REGEX_PATTERN,
+  MAX_BIO_LENGTH,
   MAX_FULLNAME_LENGTH,
   MAX_USERNAME_LENGTH,
   MIN_FULLNAME_LENGTH,
@@ -71,3 +73,23 @@ export const fullnameSchema = z
   .regex(FULLNAME_REGEX_PATTERN, {
     message: 'Name can only contain letters and spaces',
   })
+
+export const bioSchema = z
+  .string()
+  .trim()
+  .max(MAX_BIO_LENGTH, {
+    message: `Message cannot exceed ${MAX_BIO_LENGTH} characters`,
+  })
+  .optional()
+  .transform((val) =>
+    val
+      ? sanitizeHtml(val, { allowedTags: [], allowedAttributes: {} })
+      : undefined,
+  )
+
+export const profilePicSchema = z
+  .string()
+  .url({ message: 'Profile picture must be a valid URL' })
+  .optional()
+
+export const statusEmojiSchema = z.string().optional()

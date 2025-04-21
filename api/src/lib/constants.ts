@@ -17,3 +17,4 @@ export const RATE_LIMIT_COUNT = 15 // Limit each IP to 5 requests per window
 
 // Chat
 export const MAX_MESSAGE_LENGTH = 1000
+export const MAX_BIO_LENGTH = 50

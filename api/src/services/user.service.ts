@@ -1,31 +1,17 @@
 import type { Types } from 'mongoose'
 
-import cloudinary from '@/lib/cloudinary'
 import { AppError } from '@/lib/errors'
 import { sanitizeUser } from '@/lib/utils'
+import type { UpdateUserInfoObj } from '@/lib/zod-schemas/user.zod'
 import { User, type UserType } from '@/models/user.model'
 
-type UpdateProfileInputs = {
-  profilePic?: string
-  fullname?: string
-}
-
 export async function updateUserInfoService(
-  inputs: UpdateProfileInputs,
-  userId: Types.ObjectId | undefined,
+  inputs: UpdateUserInfoObj,
+  userId: Types.ObjectId,
 ) {
-  if (!userId) {
-    throw new AppError(401, 'Access denied. User not found.')
-  }
-
-  const { fullname, profilePic } = inputs
+  const { fullname } = inputs
 
   const updatedFields: Partial<UserType> = {}
-
-  if (profilePic) {
-    const uploadResponse = await cloudinary.uploader.upload(profilePic)
-    updatedFields.profilePic = uploadResponse.secure_url
-  }
 
   if (fullname) {
     updatedFields.fullname = fullname
@@ -43,3 +29,8 @@ export async function updateUserInfoService(
 
   return sanitizeUser(updatedUser)
 }
+
+// if (profilePic) {
+//   const uploadResponse = await cloudinary.uploader.upload(profilePic)
+//   updatedFields.profilePic = uploadResponse.secure_url
+// }

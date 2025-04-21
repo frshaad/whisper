@@ -1,15 +1,23 @@
 import z from 'zod'
 
-import { fullnameSchema } from '@/lib/zod-schemas'
+import {
+  bioSchema,
+  fullnameSchema,
+  statusEmojiSchema,
+  usernameSchema,
+} from '@/lib/zod-schemas'
 
 export const updateUserInfoSchema = z
   .object({
-    fullname: fullnameSchema.optional(),
-    profilePic: z
-      .string()
-      .url({ message: 'Profile picture must be a valid URL' })
-      .optional(),
+    fullname: fullnameSchema,
+    username: usernameSchema,
+    bio: bioSchema,
+    statusEmoji: statusEmojiSchema,
   })
-  .refine((data) => data.fullname || data.profilePic, {
-    message: 'At least one of fullname or profilePic must be provided',
-  })
+  .partial()
+  .refine(
+    (data) => data.fullname || data.bio || data.statusEmoji || data.username,
+    { message: 'At least one of fullname or profilePic must be provided' },
+  )
+
+export type UpdateUserInfoObj = z.infer<typeof updateUserInfoSchema>
