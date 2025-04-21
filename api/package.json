@@ -7,7 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "lint": "eslint . --fix",
     "format": "prettier . --write",
-    "type-check": "tsc"
+    "check": "tsc && eslint . --fix && prettier . --write"
   },
   "keywords": [],
   "author": "",
