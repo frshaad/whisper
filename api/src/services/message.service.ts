@@ -1,40 +1,27 @@
 import { Types } from 'mongoose'
 
 import cloudinary from '@/lib/cloudinary'
-import { AppError } from '@/lib/errors'
-import { validateId } from '@/lib/utils'
-import { messageSchema } from '@/lib/zod-schemas/message.zod'
+import { type MessageContent } from '@/lib/zod-schemas/message.zod'
 import { Message } from '@/models/message.model'
 
 export async function getChatHistoryService(
-  userIdString: string,
-  authUserId: Types.ObjectId | undefined,
+  userId: Types.ObjectId,
+  authUserId: Types.ObjectId,
 ) {
-  if (!authUserId) {
-    throw new AppError(401, 'Access denied. Invalid token.')
-  }
-
-  const otherPartyUserId = validateId(userIdString)
-
   return await Message.find({
     $or: [
-      { senderId: authUserId, receiverId: otherPartyUserId },
-      { senderId: otherPartyUserId, receiverId: authUserId },
+      { senderId: authUserId, receiverId: userId },
+      { senderId: userId, receiverId: authUserId },
     ],
   })
 }
 
 export async function sendMessageService(
-  receiverIdString: string,
-  authUserId: Types.ObjectId | undefined,
-  messageData: unknown,
+  receiverId: Types.ObjectId,
+  authUserId: Types.ObjectId,
+  messageData: MessageContent,
 ) {
-  if (!authUserId) {
-    throw new AppError(401, 'Access denied. Invalid token.')
-  }
-
-  const receiverId = validateId(receiverIdString)
-  const { image, text } = messageSchema.parse(messageData)
+  const { image, text } = messageData
 
   let imageUrl: string | undefined
   if (image) {

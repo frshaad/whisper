@@ -66,9 +66,7 @@ const userSchema = new Schema(
 
 userSchema.index({ username: 1 })
 
-const User = model('User', userSchema)
-type UserType = InferSchemaType<typeof userSchema> & {
+export type UserType = InferSchemaType<typeof userSchema> & {
   _id: Types.ObjectId
 }
-
-export { User, type UserType }
+export const User = model('User', userSchema)

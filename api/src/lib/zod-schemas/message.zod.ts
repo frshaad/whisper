@@ -22,3 +22,5 @@ export const messageSchema = z
   .refine(({ image, text }) => Boolean(text || image), {
     message: 'Either text or image is required',
   })
+
+export type MessageContent = z.infer<typeof messageSchema>

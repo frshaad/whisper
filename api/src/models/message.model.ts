@@ -1,4 +1,4 @@
-import { type InferSchemaType, model, Schema, Types } from 'mongoose'
+import { model, Schema } from 'mongoose'
 
 const messageSchema = new Schema(
   {
@@ -10,9 +10,4 @@ const messageSchema = new Schema(
   { timestamps: true },
 )
 
-const Message = model('Message', messageSchema)
-type MessageType = InferSchemaType<typeof messageSchema> & {
-  _id: Types.ObjectId
-}
-
-export { Message, type MessageType }
+export const Message = model('Message', messageSchema)

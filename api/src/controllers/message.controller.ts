@@ -1,6 +1,8 @@
 import type { Request, Response } from 'express'
 
-import { handleError } from '@/lib/errors'
+import { AppError, handleError } from '@/lib/errors'
+import { validateId } from '@/lib/utils'
+import { messageSchema } from '@/lib/zod-schemas/message.zod'
 import {
   getChatHistoryService,
   sendMessageService,
@@ -8,8 +10,12 @@ import {
 
 export async function getAllMessagesWithUser(req: Request, res: Response) {
   try {
-    const { id: otherPartyUserId } = req.params
+    const otherPartyUserId = validateId(req.params.id)
     const userId = req.userId
+    if (!userId) {
+      throw new AppError(401, 'Access denied. Invalid token.')
+    }
+
     const messages = await getChatHistoryService(otherPartyUserId, userId)
     res.status(200).json(messages)
   } catch (error) {
@@ -19,13 +25,17 @@ export async function getAllMessagesWithUser(req: Request, res: Response) {
 
 export async function sendMessage(req: Request, res: Response) {
   try {
-    const { id: otherPartyUserId } = req.params
+    const otherPartyUserId = validateId(req.params.id)
     const userId = req.userId
-    const messageData: unknown = req.body
+    if (!userId) {
+      throw new AppError(401, 'Access denied. Invalid token.')
+    }
+    const parsedMessageData = messageSchema.parse(req.body)
+
     const message = await sendMessageService(
       otherPartyUserId,
       userId,
-      messageData,
+      parsedMessageData,
     )
     res.status(201).json(message)
   } catch (error) {
