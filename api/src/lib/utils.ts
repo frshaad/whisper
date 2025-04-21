@@ -37,7 +37,10 @@ export function generateToken(userId: Types.ObjectId, res: Response) {
 export function sanitizeUser(
   userDoc: Document<unknown, object, UserType> & UserType,
 ): Omit<UserType, 'password'> {
-  return excludeFields(userDoc.toObject(), ['password', '__v'])
+  return excludeFields(userDoc.toObject({ virtuals: true }), [
+    'password',
+    '__v',
+  ])
 }
 
 export function validateId(
