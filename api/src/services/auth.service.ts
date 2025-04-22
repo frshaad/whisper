@@ -58,7 +58,7 @@ export async function changePasswordService(
       },
     },
     { new: true },
-  ).select('+password')
+  )
 
   if (!updatedUser) {
     throw new AppError(404, 'User not found')
