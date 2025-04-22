@@ -26,7 +26,7 @@ export default async function authMiddleware(
       throw new AppError(401, 'Access denied. Invalid token.')
     }
 
-    const user = await User.findById(decoded.userId)
+    const user = await User.findById(decoded.userId).select('+password')
     if (!user) {
       throw new AppError(404, 'Access denied. User not found.')
     }
