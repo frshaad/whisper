@@ -1,6 +1,15 @@
-import { type InferSchemaType, model, Schema, Types } from 'mongoose'
+import { HydratedDocument, type InferSchemaType, model, Schema } from 'mongoose'
 
-import { PROFILE_PICTURE_REGEX_PATTERN } from '@/lib/constants'
+import {
+  MAX_FULLNAME_LENGTH,
+  MAX_USERNAME_LENGTH,
+  MIN_FULLNAME_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  MIN_USERNAME_LENGTH,
+  PROFILE_PICTURE_REGEX_PATTERN,
+} from '@/lib/constants'
+import { createUniqueArrayField } from '@/lib/helpers'
+import { comparePasswords, hashPassword } from '@/lib/utils'
 
 const userSchema = new Schema(
   {
@@ -9,20 +18,26 @@ const userSchema = new Schema(
       trim: true,
       required: true,
       unique: true,
-      minlength: 3,
-      maxlength: 20,
+      minlength: MIN_USERNAME_LENGTH,
+      maxlength: MAX_USERNAME_LENGTH,
       lowercase: true,
+      immutable: true,
     },
     fullname: {
       type: String,
       trim: true,
       required: true,
-      minlength: 2,
-      maxlength: 50,
+      minlength: MIN_FULLNAME_LENGTH,
+      maxlength: MAX_FULLNAME_LENGTH,
     },
     password: {
       type: String,
       required: true,
+      select: false,
+      minlength: [
+        MIN_PASSWORD_LENGTH,
+        `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`,
+      ],
     },
     passwordChangedAt: {
       type: Date,
@@ -40,9 +55,13 @@ const userSchema = new Schema(
     profilePicPublicId: {
       type: String,
       default: '',
+      validate: {
+        validator: (v: string) => typeof v === 'string' && !v.includes('..'),
+        message: 'Invalid public ID',
+      },
     },
-    contacts: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
-    blockedUsers: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
+    contacts: createUniqueArrayField('User'),
+    blockedUsers: createUniqueArrayField('User'),
     isOnline: {
       type: Boolean,
       default: false,
@@ -58,12 +77,52 @@ const userSchema = new Schema(
       maxlength: 160,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 )
 
-userSchema.index({ username: 1 })
+// Indexes for search, sort, and online user tracking optimizations
+userSchema.index({ createdAt: -1 })
+userSchema.index({ isOnline: 1, lastSeen: -1 })
 
-export type UserDoc = InferSchemaType<typeof userSchema> & {
-  _id: Types.ObjectId
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next()
+  }
+
+  this.password = await hashPassword(this.password)
+  this.passwordChangedAt = new Date()
+
+  next()
+})
+
+userSchema.methods.comparePassword = async function (
+  this: UserDoc,
+  candidatePassword: string,
+) {
+  return comparePasswords(candidatePassword, this.password)
 }
-export const User = model('User', userSchema)
+
+userSchema.virtual('contactDetails', {
+  ref: 'User',
+  localField: 'contacts',
+  foreignField: '_id',
+})
+
+userSchema.virtual('blockedUserDetails', {
+  ref: 'User',
+  localField: 'blockedUsers',
+  foreignField: '_id',
+})
+
+export type UserDoc = HydratedDocument<
+  InferSchemaType<typeof userSchema>,
+  {
+    comparePassword(candidatePassword: string): Promise<boolean>
+  }
+>
+
+export const User = model<UserDoc>('User', userSchema)

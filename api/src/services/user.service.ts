@@ -2,7 +2,6 @@ import type { Types } from 'mongoose'
 
 import cloudinary from '@/lib/cloudinary'
 import { AppError } from '@/lib/errors'
-import { sanitizeUser } from '@/lib/utils'
 import type { UpdateUserInfoObj } from '@/lib/zod-schemas/user.zod'
 import { User, type UserDoc } from '@/models/user.model'
 
@@ -10,7 +9,7 @@ export async function updateUserInfoService(
   inputs: UpdateUserInfoObj,
   userId: Types.ObjectId,
 ) {
-  const updatedFields: Partial<UserDoc> = {}
+  const updatedFields: Partial<Pick<UserDoc, 'fullname' | 'bio'>> = {}
 
   if (inputs.fullname) {
     updatedFields.fullname = inputs.fullname
@@ -30,7 +29,7 @@ export async function updateUserInfoService(
     throw new AppError(404, 'User not found')
   }
 
-  return sanitizeUser(updatedUser)
+  return updatedUser
 }
 
 export async function updateProfilePicService(
@@ -67,5 +66,5 @@ export async function updateProfilePicService(
     throw new AppError(404, 'User not found')
   }
 
-  return sanitizeUser(updatedUser)
+  return updatedUser
 }

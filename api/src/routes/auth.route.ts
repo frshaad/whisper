@@ -12,15 +12,13 @@ import { authLimiter } from '@/middlewares/rateLimiter'
 
 const router = Router()
 
-router.use(authLimiter) // Apply rate limiting to all auth routes
-
-router.post('/login', logIn)
-router.post('/signup', signUp)
+router.post('/login', authLimiter, logIn)
+router.post('/signup', authLimiter, signUp)
 router.post('/logout', logOut)
 
 router.use(authMiddleware)
 
 router.get('/me', getMyProfile)
-router.get('/change-password', changePassword)
+router.post('/change-password', changePassword)
 
 export default router

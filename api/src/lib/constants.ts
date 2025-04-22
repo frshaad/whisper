@@ -12,7 +12,7 @@ export const PROFILE_PICTURE_REGEX_PATTERN = /^https?:\/\/.+\..+/
 
 // Auth rate limiter
 export const RATE_LIMIT_WINDOW = 15 * 60 * 1000 // 15 minutes
-export const RATE_LIMIT_COUNT = 15 // Limit each IP to 5 requests per window
+export const RATE_LIMIT_COUNT = 25 // Limit each IP to 5 requests per window
 
 // Chat
 export const MAX_MESSAGE_LENGTH = 1000

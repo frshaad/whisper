@@ -1,12 +1,13 @@
 import type { Request, Response } from 'express'
 
 import { AppError, handleError } from '@/lib/errors'
-import { generateToken } from '@/lib/utils'
+import { generateToken, sanitizeUser } from '@/lib/utils'
 import {
   changePasswordSchema,
   loginInputsSchema,
   signupInputsSchema,
 } from '@/lib/zod-schemas/auth.zod'
+import type { UserDoc } from '@/models/user.model'
 import {
   changePasswordService,
   loginService,
@@ -19,7 +20,7 @@ export async function signUp(req: Request, res: Response) {
     const user = await signupService(parsedInputs)
     generateToken(user._id, res)
 
-    res.status(201).json({ success: true, data: user })
+    res.status(201).json({ success: true, data: sanitizeUser(user) })
   } catch (error) {
     handleError(error, res)
   }
@@ -29,9 +30,10 @@ export async function logIn(req: Request, res: Response) {
   try {
     const parsedInputs = loginInputsSchema.parse(req.body)
     const user = await loginService(parsedInputs)
+
     generateToken(user._id, res)
 
-    res.status(200).json({ success: true, data: user })
+    res.status(200).json({ success: true, data: sanitizeUser(user) })
   } catch (error) {
     handleError(error, res)
   }
@@ -50,7 +52,8 @@ export async function logOut(req: Request, res: Response) {
 
 export async function getMyProfile(req: Request, res: Response) {
   try {
-    res.status(200).json({ success: true, data: req.user })
+    const user = sanitizeUser(req.user as UserDoc)
+    res.status(200).json({ success: true, data: user })
   } catch (error) {
     handleError(error, res)
   }
