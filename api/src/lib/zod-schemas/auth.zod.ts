@@ -20,3 +20,7 @@ export const signupInputsSchema = loginInputsSchema
     path: ['confirmPassword'],
     message: "Passwords don't match",
   })
+
+export const changePasswordSchema = z.object({
+  password: passwordSchema,
+})

@@ -1,6 +1,7 @@
 import { Router } from 'express'
 
 import {
+  changePassword,
   getMyProfile,
   logIn,
   logOut,
@@ -11,12 +12,15 @@ import { authLimiter } from '@/middlewares/rateLimiter'
 
 const router = Router()
 
-router.get('/check', authMiddleware, getMyProfile)
-
 router.use(authLimiter) // Apply rate limiting to all auth routes
 
 router.post('/login', logIn)
 router.post('/signup', signUp)
 router.post('/logout', logOut)
+
+router.use(authMiddleware)
+
+router.get('/me', getMyProfile)
+router.get('/change-password', changePassword)
 
 export default router

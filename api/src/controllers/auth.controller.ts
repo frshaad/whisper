@@ -1,12 +1,17 @@
 import type { Request, Response } from 'express'
 
-import { handleError } from '@/lib/errors'
+import { AppError, handleError } from '@/lib/errors'
 import { generateToken } from '@/lib/utils'
 import {
+  changePasswordSchema,
   loginInputsSchema,
   signupInputsSchema,
 } from '@/lib/zod-schemas/auth.zod'
-import { loginService, signupService } from '@/services/auth.service'
+import {
+  changePasswordService,
+  loginService,
+  signupService,
+} from '@/services/auth.service'
 
 export async function signUp(req: Request, res: Response) {
   try {
@@ -37,7 +42,7 @@ export async function logOut(req: Request, res: Response) {
     res.cookie('jwt', '', { maxAge: 0 })
     res
       .status(200)
-      .json({ status: 'success', message: 'User logged out Successfully' })
+      .json({ success: true, message: 'User logged out Successfully' })
   } catch (error) {
     handleError(error, res)
   }
@@ -46,6 +51,22 @@ export async function logOut(req: Request, res: Response) {
 export async function getMyProfile(req: Request, res: Response) {
   try {
     res.status(200).json({ success: true, data: req.user })
+  } catch (error) {
+    handleError(error, res)
+  }
+}
+
+export async function changePassword(req: Request, res: Response) {
+  try {
+    const { password } = changePasswordSchema.parse(req.body)
+    const user = req.user
+    if (!user) {
+      throw new AppError(404, 'Access denied. User not found.')
+    }
+
+    await changePasswordService(password, user)
+
+    res.status(200).json({ success: true })
   } catch (error) {
     handleError(error, res)
   }
