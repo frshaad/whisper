@@ -43,7 +43,7 @@ export async function logOut(req: Request, res: Response) {
   }
 }
 
-export async function checkAuth(req: Request, res: Response) {
+export async function getMyProfile(req: Request, res: Response) {
   try {
     res.status(200).json({ success: true, data: req.user })
   } catch (error) {
