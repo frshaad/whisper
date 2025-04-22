@@ -24,6 +24,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    passwordChangedAt: {
+      type: Date,
+      default: null,
+    },
     profilePic: {
       type: String,
       default: '',
@@ -59,7 +63,7 @@ const userSchema = new Schema(
 
 userSchema.index({ username: 1 })
 
-export type UserType = InferSchemaType<typeof userSchema> & {
+export type UserDoc = InferSchemaType<typeof userSchema> & {
   _id: Types.ObjectId
 }
 export const User = model('User', userSchema)
