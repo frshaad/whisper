@@ -6,7 +6,7 @@ import { type Document, Types } from 'mongoose'
 import { env } from '@/lib/env'
 import { AppError } from '@/lib/errors'
 import { excludeFields } from '@/lib/helpers'
-import type { UserType } from '@/models/user.model'
+import type { UserDoc } from '@/models/user.model'
 
 export async function hashPassword(password: string): Promise<string> {
   const saltFactor = env.HASH_SALT_FACTOR
@@ -35,8 +35,8 @@ export function generateToken(userId: Types.ObjectId, res: Response) {
 }
 
 export function sanitizeUser(
-  userDoc: Document<unknown, object, UserType> & UserType,
-): Omit<UserType, 'password'> {
+  userDoc: Document<unknown, object, UserDoc> & UserDoc,
+): Omit<UserDoc, 'password'> {
   return excludeFields(userDoc.toObject({ virtuals: true }), [
     'password',
     '__v',

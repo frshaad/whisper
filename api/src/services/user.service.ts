@@ -4,13 +4,13 @@ import cloudinary from '@/lib/cloudinary'
 import { AppError } from '@/lib/errors'
 import { sanitizeUser } from '@/lib/utils'
 import type { UpdateUserInfoObj } from '@/lib/zod-schemas/user.zod'
-import { User, type UserType } from '@/models/user.model'
+import { User, type UserDoc } from '@/models/user.model'
 
 export async function updateUserInfoService(
   inputs: UpdateUserInfoObj,
   userId: Types.ObjectId,
 ) {
-  const updatedFields: Partial<UserType> = {}
+  const updatedFields: Partial<UserDoc> = {}
 
   if (inputs.fullname) {
     updatedFields.fullname = inputs.fullname
@@ -35,7 +35,7 @@ export async function updateUserInfoService(
 
 export async function updateProfilePicService(
   profilePic: string,
-  user: UserType,
+  user: UserDoc,
 ) {
   if (user.profilePicPublicId) {
     await cloudinary.uploader.destroy(user.profilePicPublicId)
