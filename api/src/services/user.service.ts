@@ -1,5 +1,6 @@
 import type { Types } from 'mongoose'
 
+import cloudinary from '@/lib/cloudinary'
 import { AppError } from '@/lib/errors'
 import { sanitizeUser } from '@/lib/utils'
 import type { UpdateUserInfoObj } from '@/lib/zod-schemas/user.zod'
@@ -32,7 +33,39 @@ export async function updateUserInfoService(
   return sanitizeUser(updatedUser)
 }
 
-// if (profilePic) {
-//   const uploadResponse = await cloudinary.uploader.upload(profilePic)
-//   updatedFields.profilePic = uploadResponse.secure_url
-// }
+export async function updateProfilePicService(
+  profilePic: string,
+  user: UserType,
+) {
+  if (user.profilePicPublicId) {
+    await cloudinary.uploader.destroy(user.profilePicPublicId)
+  }
+
+  const { secure_url, public_id } = await cloudinary.uploader.upload(
+    profilePic,
+    {
+      folder: 'users',
+      transformation: [
+        { width: 300, height: 300, crop: 'limit' },
+        { quality: 'auto' },
+      ],
+    },
+  )
+
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      $set: {
+        profilePic: secure_url,
+        profilePicPublicId: public_id,
+      },
+    },
+    { new: true },
+  )
+
+  if (!updatedUser) {
+    throw new AppError(404, 'User not found')
+  }
+
+  return sanitizeUser(updatedUser)
+}

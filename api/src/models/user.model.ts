@@ -33,6 +33,10 @@ const userSchema = new Schema(
         message: 'Invalid profile picture URL',
       },
     },
+    profilePicPublicId: {
+      type: String,
+      default: '',
+    },
     contacts: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
     blockedUsers: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
     isOnline: {

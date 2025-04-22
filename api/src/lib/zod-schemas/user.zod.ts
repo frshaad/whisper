@@ -1,6 +1,6 @@
 import z from 'zod'
 
-import { bioSchema, fullnameSchema } from '@/lib/zod-schemas'
+import { bioSchema, fullnameSchema, profilePicSchema } from '@/lib/zod-schemas'
 
 export const updateUserInfoSchema = z
   .object({
@@ -13,3 +13,7 @@ export const updateUserInfoSchema = z
   })
 
 export type UpdateUserInfoObj = z.infer<typeof updateUserInfoSchema>
+
+export const updateProfilePicSchema = z.object({
+  profilePic: profilePicSchema,
+})

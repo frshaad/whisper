@@ -90,4 +90,3 @@ export const bioSchema = z
 export const profilePicSchema = z
   .string()
   .url({ message: 'Profile picture must be a valid URL' })
-  .optional()

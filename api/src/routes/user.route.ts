@@ -8,5 +8,6 @@ const router = Router()
 router.use(authMiddleware)
 
 router.put('/update-info', updateUserInfo)
+router.put('/update-profile-pic', updateUserInfo)
 
 export default router
