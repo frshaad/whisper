@@ -67,13 +67,18 @@ export async function getMyProfile(req: Request, res: Response) {
 
 export async function changePassword(req: Request, res: Response) {
   try {
-    const { password } = changePasswordSchema.parse(req.body)
+    const { currentPassword, newPassword } = changePasswordSchema.parse(
+      req.body,
+    )
+
     const user = req.user
     if (!user) {
       throw new AppError(404, 'Access denied. User not found.')
     }
 
-    await changePasswordService(password, user)
+    await verifyPassword(user._id, currentPassword)
+
+    await changePasswordService(newPassword, user)
 
     res.status(200).json({ success: true })
   } catch (error) {

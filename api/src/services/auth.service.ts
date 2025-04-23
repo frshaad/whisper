@@ -43,28 +43,13 @@ export async function changePasswordService(
   newPassword: string,
   user: UserDoc,
 ) {
-  const isSamePassword = await user.comparePassword(newPassword)
-  if (isSamePassword) {
-    throw new AppError(
-      400,
-      'New password cannot be the same as the old password.',
-    )
-  }
-
-  const updatedUser = await User.findByIdAndUpdate(
-    user._id,
-    {
-      $set: {
-        password: newPassword,
-        passwordChangedAt: new Date(),
-      },
-    },
-    { new: true },
-  )
-
-  if (!updatedUser) {
+  const existingUser = await User.findById(user._id).select('+password')
+  if (!existingUser) {
     throw new AppError(404, 'User not found')
   }
+
+  existingUser.password = newPassword
+  await existingUser.save()
 }
 
 export async function deleteAccountService(userId: Types.ObjectId) {

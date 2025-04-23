@@ -21,6 +21,12 @@ export const signupInputsSchema = loginInputsSchema
     message: "Passwords don't match",
   })
 
-export const changePasswordSchema = z.object({
-  password: passwordSchema,
-})
+export const changePasswordSchema = z
+  .object({
+    newPassword: passwordSchema,
+    currentPassword: passwordSchema,
+  })
+  .refine(
+    ({ currentPassword, newPassword }) => currentPassword !== newPassword,
+    'New password cannot be the same as the old password.',
+  )
