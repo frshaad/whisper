@@ -7,7 +7,6 @@ import {
   loginInputsSchema,
   signupInputsSchema,
 } from '@/lib/zod-schemas/auth.zod'
-import type { UserDoc } from '@/models/user.model'
 import {
   changePasswordService,
   loginService,
@@ -45,19 +44,6 @@ export async function logOut(req: Request, res: Response) {
     res
       .status(200)
       .json({ success: true, message: 'User logged out Successfully' })
-  } catch (error) {
-    handleError(error, res)
-  }
-}
-
-export async function getUserProfile(req: Request, res: Response) {
-  try {
-    const { user } = req
-    if (!user) {
-      throw new AppError(400, 'User does not exist')
-    }
-
-    res.status(200).json({ success: true, data: sanitizeUser(user as UserDoc) })
   } catch (error) {
     handleError(error, res)
   }

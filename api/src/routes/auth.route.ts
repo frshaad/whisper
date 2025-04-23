@@ -13,10 +13,10 @@ const router = Router()
 
 router.post('/login', authLimiter, logIn)
 router.post('/signup', authLimiter, signUp)
-router.post('/logout', logOut)
 
 router.use(authMiddleware)
 
+router.post('/logout', logOut)
 router.post('/change-password', changePassword)
 
 export default router

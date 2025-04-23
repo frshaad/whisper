@@ -68,3 +68,15 @@ export async function updateProfilePicService(
 
   return updatedUser
 }
+
+export async function getAllContactsService(userId: Types.ObjectId) {
+  const user = await User.findById(userId).populate(
+    'contacts',
+    'username fullname profilePic',
+  )
+  if (!user) {
+    throw new AppError(404, 'Access denied. User not found.')
+  }
+
+  return user.contacts
+}
