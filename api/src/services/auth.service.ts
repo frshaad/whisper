@@ -1,3 +1,5 @@
+import type { Types } from 'mongoose'
+
 import { AppError } from '@/lib/errors'
 import { User, type UserDoc } from '@/models/user.model'
 
@@ -63,4 +65,8 @@ export async function changePasswordService(
   if (!updatedUser) {
     throw new AppError(404, 'User not found')
   }
+}
+
+export async function deleteAccountService(userId: Types.ObjectId) {
+  await User.findByIdAndDelete(userId)
 }

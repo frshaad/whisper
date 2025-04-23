@@ -11,18 +11,21 @@ import type {
   SafeUser,
   SafeUserWithToken,
 } from '@/lib/types'
-import type { UserDoc } from '@/models/user.model'
+import { User, type UserDoc } from '@/models/user.model'
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(env.HASH_SALT_FACTOR)
   return await bcrypt.hash(password, salt)
 }
 
-export async function comparePasswords(
-  candidatePassword: string,
-  hashedPassword: string,
+export async function verifyPassword(
+  userId: Types.ObjectId,
+  inputPassword: string,
 ) {
-  return await bcrypt.compare(candidatePassword, hashedPassword)
+  const user = await User.findById(userId).select('+password')
+  if (!user || !(await user.comparePassword(inputPassword))) {
+    throw new AppError(401, 'Incorrect password')
+  }
 }
 
 export function generateToken(userId: Types.ObjectId, res: Response) {

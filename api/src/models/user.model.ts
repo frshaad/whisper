@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs'
 import { HydratedDocument, type InferSchemaType, model, Schema } from 'mongoose'
 
 import {
@@ -9,7 +10,7 @@ import {
   PROFILE_PICTURE_REGEX_PATTERN,
 } from '@/lib/constants'
 import { createUniqueArrayField } from '@/lib/helpers'
-import { comparePasswords, hashPassword } from '@/lib/utils'
+import { hashPassword } from '@/lib/utils'
 
 const userSchema = new Schema(
   {
@@ -103,7 +104,7 @@ userSchema.methods.comparePassword = async function (
   this: UserDoc,
   candidatePassword: string,
 ) {
-  return comparePasswords(candidatePassword, this.password)
+  return await bcrypt.compare(candidatePassword, this.password)
 }
 
 userSchema.virtual('contactDetails', {
