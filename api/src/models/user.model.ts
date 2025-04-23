@@ -103,18 +103,6 @@ userSchema.methods.comparePassword = async function (
   return await bcrypt.compare(candidatePassword, this.password)
 }
 
-userSchema.virtual('contactDetails', {
-  ref: 'User',
-  localField: 'contacts',
-  foreignField: '_id',
-})
-
-userSchema.virtual('blockedUserDetails', {
-  ref: 'User',
-  localField: 'blockedUsers',
-  foreignField: '_id',
-})
-
 export type UserDoc = HydratedDocument<
   InferSchemaType<typeof userSchema>,
   {
