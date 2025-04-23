@@ -2,7 +2,6 @@ import type { Request, Response } from 'express'
 
 import { AppError, handleError } from '@/lib/errors'
 import { generateToken, sanitizeUser, verifyPassword } from '@/lib/utils'
-import { passwordSchema } from '@/lib/zod-schemas'
 import {
   changePasswordSchema,
   loginInputsSchema,
@@ -11,7 +10,6 @@ import {
 import type { UserDoc } from '@/models/user.model'
 import {
   changePasswordService,
-  deleteAccountService,
   loginService,
   signupService,
 } from '@/services/auth.service'
@@ -80,26 +78,6 @@ export async function changePassword(req: Request, res: Response) {
 
     await changePasswordService(newPassword, user)
 
-    res.status(200).json({ success: true })
-  } catch (error) {
-    handleError(error, res)
-  }
-}
-
-export async function deleteAccount(req: Request, res: Response) {
-  try {
-    const user = req.user
-    if (!user) {
-      throw new AppError(404, 'Access denied. User not found.')
-    }
-
-    const { password } = req.body
-    const parsedPassword = passwordSchema.parse(password)
-    await verifyPassword(user._id, parsedPassword)
-
-    await deleteAccountService(user._id)
-
-    res.clearCookie('token')
     res.status(200).json({ success: true })
   } catch (error) {
     handleError(error, res)
