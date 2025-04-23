@@ -50,7 +50,7 @@ export async function logOut(req: Request, res: Response) {
   }
 }
 
-export async function getMyProfile(req: Request, res: Response) {
+export async function getUserProfile(req: Request, res: Response) {
   try {
     const { user } = req
     if (!user) {

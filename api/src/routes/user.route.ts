@@ -1,5 +1,6 @@
 import { Router } from 'express'
 
+import { getUserProfile } from '@/controllers/auth.controller'
 import {
   deleteAccount,
   updateUserInfo,
@@ -11,8 +12,9 @@ const router = Router()
 
 router.use(authMiddleware)
 
-router.put('/update-info', updateUserInfo)
-router.put('/update-profile-pic', uploadProfilePic)
+router.get('/profile', getUserProfile)
+router.put('/profile', updateUserInfo)
+router.put('/profile-picture', uploadProfilePic)
 router.post('/delete-account', deleteAccount)
 
 export default router

@@ -2,7 +2,6 @@ import { Router } from 'express'
 
 import {
   changePassword,
-  getMyProfile,
   logIn,
   logOut,
   signUp,
@@ -18,7 +17,6 @@ router.post('/logout', logOut)
 
 router.use(authMiddleware)
 
-router.get('/me', getMyProfile)
 router.post('/change-password', changePassword)
 
 export default router
