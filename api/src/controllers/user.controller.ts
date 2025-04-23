@@ -16,8 +16,11 @@ import type { UserDoc } from '@/models/user.model'
 import { deleteAccountService } from '@/services/auth.service'
 import {
   addContactService,
+  blockUserService,
   getAllContactsService,
+  getBlockedUsersService,
   removeContactService,
+  unblockUserService,
   updateProfilePicService,
   updateUserInfoService,
 } from '@/services/user.service'
@@ -114,6 +117,46 @@ export async function removeContact(req: Request, res: Response) {
     const user = requireUser(req)
 
     await removeContactService(user._id, constactId)
+
+    res.status(200).json({ success: true })
+  } catch (error) {
+    handleError(error, res)
+  }
+}
+
+// ==========================
+// ===== Blocked Users ======
+// ==========================
+export async function getBlockedUsers(req: Request, res: Response) {
+  try {
+    const user = requireUser(req)
+
+    const blockedUsers = await getBlockedUsersService(user._id)
+    res.status(200).json({ success: true, data: blockedUsers })
+  } catch (error) {
+    handleError(error, res)
+  }
+}
+
+export async function blockUser(req: Request, res: Response) {
+  try {
+    const targetUserId = validateId(req.params.userId)
+    const user = requireUser(req)
+
+    await blockUserService(user._id, targetUserId)
+
+    res.status(200).json({ success: true })
+  } catch (error) {
+    handleError(error, res)
+  }
+}
+
+export async function unblockUser(req: Request, res: Response) {
+  try {
+    const targetUserId = validateId(req.params.userId)
+    const user = requireUser(req)
+
+    await unblockUserService(user._id, targetUserId)
 
     res.status(200).json({ success: true })
   } catch (error) {

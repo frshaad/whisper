@@ -2,10 +2,13 @@ import { Router } from 'express'
 
 import {
   addContact,
+  blockUser,
   deleteAccount,
   getAllContacts,
+  getBlockedUsers,
   getUserProfile,
   removeContact,
+  unblockUser,
   updateUserInfo,
   uploadProfilePic,
 } from '@/controllers/user.controller'
@@ -25,9 +28,9 @@ router.get('/contacts', getAllContacts)
 router.post('/contacts/:userId', addContact)
 router.delete('/contacts/:userId', removeContact)
 
-// router.get('/blocked', getBlockedUsers)
-// router.post('/block/:userId', blockUser)
-// router.delete('/block/:userId', unblockUser)
+router.get('/blocked', getBlockedUsers)
+router.post('/block/:userId', blockUser)
+router.delete('/block/:userId', unblockUser)
 
 router.post('/delete-account', deleteAccount)
 

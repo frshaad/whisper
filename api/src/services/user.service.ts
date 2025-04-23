@@ -69,7 +69,9 @@ export async function updateProfilePicService(
   return updatedUser
 }
 
-// =============== Contacts ===============
+// =====================
+// ===== Contacts ======
+// =====================
 
 export async function getAllContactsService(userId: Types.ObjectId) {
   const user = await User.findById(userId)
@@ -111,9 +113,11 @@ export async function removeContactService(
   userId: Types.ObjectId,
   contactId: Types.ObjectId,
 ) {
-  const user = await User.findById(userId)
+  const user = await User.findById(userId).select('contacts')
 
-  if (!user) throw new AppError(401, 'Access denied. User not found.')
+  if (!user) {
+    throw new AppError(401, 'Access denied. User not found.')
+  }
 
   const initialLength = user.contacts.length
   user.contacts = user.contacts.filter((id) => !id.equals(contactId))
@@ -122,5 +126,60 @@ export async function removeContactService(
     throw new AppError(400, 'User is not in your contacts')
   }
 
+  await user.save()
+}
+
+// ==========================
+// ===== Blocked Users ======
+// ==========================
+export async function getBlockedUsersService(userId: Types.ObjectId) {
+  const user = await User.findById(userId)
+    .populate('blockedUsers', 'username fullname profilePic _id')
+    .select('blockedUsers')
+
+  if (!user) {
+    throw new AppError(404, 'Access denied. User not found.')
+  }
+
+  return user.blockedUsers
+}
+
+export async function blockUserService(
+  userId: Types.ObjectId,
+  blockId: Types.ObjectId,
+) {
+  const user = await User.findById(userId).select('blockedUsers')
+
+  if (!user) {
+    throw new AppError(401, 'Access denied. User not found.')
+  }
+
+  const isAlreadyBlocked = user.blockedUsers.some((id) => id.equals(blockId))
+
+  if (isAlreadyBlocked) {
+    throw new AppError(400, 'You already blocked the user.')
+  }
+
+  user.blockedUsers.push(blockId)
+  await user.save()
+}
+
+export async function unblockUserService(
+  userId: Types.ObjectId,
+  blockId: Types.ObjectId,
+) {
+  const user = await User.findById(userId).select('blockedUsers')
+
+  if (!user) {
+    throw new AppError(401, 'Access denied. User not found.')
+  }
+
+  const newBlocked = user.blockedUsers.filter((id) => !id.equals(blockId))
+
+  if (newBlocked.length === user.blockedUsers.length) {
+    throw new AppError(400, 'User is not in your block')
+  }
+
+  user.blockedUsers = newBlocked
   await user.save()
 }
