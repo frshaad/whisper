@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import type { Response } from 'express'
+import type { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { Types } from 'mongoose'
 
@@ -12,6 +12,13 @@ import type {
   SafeUserWithToken,
 } from '@/lib/types'
 import { User, type UserDoc } from '@/models/user.model'
+
+export function requireUser(req: Request): UserDoc {
+  if (!req.user) {
+    throw new AppError(401, 'Access denied. User not found.')
+  }
+  return req.user
+}
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(env.HASH_SALT_FACTOR)

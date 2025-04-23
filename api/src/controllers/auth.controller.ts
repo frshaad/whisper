@@ -1,7 +1,12 @@
 import type { Request, Response } from 'express'
 
-import { AppError, handleError } from '@/lib/errors'
-import { generateToken, sanitizeUser, verifyPassword } from '@/lib/utils'
+import { handleError } from '@/lib/errors'
+import {
+  generateToken,
+  requireUser,
+  sanitizeUser,
+  verifyPassword,
+} from '@/lib/utils'
 import {
   changePasswordSchema,
   loginInputsSchema,
@@ -55,10 +60,7 @@ export async function changePassword(req: Request, res: Response) {
       req.body,
     )
 
-    const user = req.user
-    if (!user) {
-      throw new AppError(404, 'Access denied. User not found.')
-    }
+    const user = requireUser(req)
 
     await verifyPassword(user._id, currentPassword)
 
