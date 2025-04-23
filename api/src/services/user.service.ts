@@ -70,15 +70,21 @@ export async function updateProfilePicService(
 }
 
 export async function getAllContactsService(userId: Types.ObjectId) {
-  const user = await User.findById(userId).populate(
-    'contacts',
-    'username fullname profilePic id',
-  )
+  const user = await User.findById(userId)
+    .populate('contacts', 'username fullname profilePic _id')
+    .select('contacts blockedUsers')
+
   if (!user) {
     throw new AppError(404, 'Access denied. User not found.')
   }
 
-  return user.contacts
+  const blockedIds = new Set(user.blockedUsers.map(String))
+
+  const visibleContacts = user.contacts.filter(
+    (contact) => !blockedIds.has(contact._id.toString()),
+  )
+
+  return visibleContacts
 }
 
 export async function addContactService(
