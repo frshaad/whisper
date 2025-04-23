@@ -1,7 +1,12 @@
 import type { Request, Response } from 'express'
 
 import { AppError, handleError } from '@/lib/errors'
-import { sanitizeUser, verifyPassword } from '@/lib/utils'
+import {
+  requireUser,
+  sanitizeUser,
+  validateId,
+  verifyPassword,
+} from '@/lib/utils'
 import { passwordSchema } from '@/lib/zod-schemas'
 import {
   updateProfilePicSchema,
@@ -10,7 +15,9 @@ import {
 import type { UserDoc } from '@/models/user.model'
 import { deleteAccountService } from '@/services/auth.service'
 import {
+  addContactService,
   getAllContactsService,
+  removeContactService,
   updateProfilePicService,
   updateUserInfoService,
 } from '@/services/user.service'
@@ -47,10 +54,7 @@ export async function updateUserInfo(req: Request, res: Response) {
 export async function uploadProfilePic(req: Request, res: Response) {
   try {
     const { profilePic } = updateProfilePicSchema.parse(req.body)
-    const user = req.user
-    if (!user) {
-      throw new AppError(404, 'Access denied. User not found.')
-    }
+    const user = requireUser(req)
 
     const updatedUser = await updateProfilePicService(profilePic, user)
 
@@ -62,10 +66,7 @@ export async function uploadProfilePic(req: Request, res: Response) {
 
 export async function deleteAccount(req: Request, res: Response) {
   try {
-    const user = req.user
-    if (!user) {
-      throw new AppError(404, 'Access denied. User not found.')
-    }
+    const user = requireUser(req)
 
     const { password } = req.body
     const parsedPassword = passwordSchema.parse(password)
@@ -80,15 +81,41 @@ export async function deleteAccount(req: Request, res: Response) {
   }
 }
 
+// =====================
+// ===== Contacts ======
+// =====================
 export async function getAllContacts(req: Request, res: Response) {
   try {
-    const user = req.user
-    if (!user) {
-      throw new AppError(404, 'Access denied. User not found.')
-    }
+    const user = requireUser(req)
 
     const contacts = await getAllContactsService(user._id)
     res.status(200).json({ success: true, data: contacts })
+  } catch (error) {
+    handleError(error, res)
+  }
+}
+
+export async function addContact(req: Request, res: Response) {
+  try {
+    const constactId = validateId(req.params.userId)
+    const user = requireUser(req)
+
+    await addContactService(user._id, constactId)
+
+    res.status(200).json({ success: true })
+  } catch (error) {
+    handleError(error, res)
+  }
+}
+
+export async function removeContact(req: Request, res: Response) {
+  try {
+    const constactId = validateId(req.params.userId)
+    const user = requireUser(req)
+
+    await removeContactService(user._id, constactId)
+
+    res.status(200).json({ success: true })
   } catch (error) {
     handleError(error, res)
   }

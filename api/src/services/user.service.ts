@@ -72,11 +72,51 @@ export async function updateProfilePicService(
 export async function getAllContactsService(userId: Types.ObjectId) {
   const user = await User.findById(userId).populate(
     'contacts',
-    'username fullname profilePic',
+    'username fullname profilePic id',
   )
   if (!user) {
     throw new AppError(404, 'Access denied. User not found.')
   }
 
   return user.contacts
+}
+
+export async function addContactService(
+  userId: Types.ObjectId,
+  contactId: Types.ObjectId,
+) {
+  const user = await User.findById(userId)
+
+  if (!user) {
+    throw new AppError(401, 'Access denied. User not found.')
+  }
+
+  const isAlreadyContact = user.contacts.some((id) => id.equals(contactId))
+
+  if (isAlreadyContact) {
+    throw new AppError(400, 'User is already in your contacts')
+  }
+
+  user.contacts.push(contactId)
+  await user.save()
+}
+
+export async function removeContactService(
+  userId: Types.ObjectId,
+  contactId: Types.ObjectId,
+) {
+  const user = await User.findById(userId)
+
+  if (!user) {
+    throw new AppError(401, 'Access denied. User not found.')
+  }
+
+  const wasInContacts = user.contacts.some((id) => id.equals(contactId))
+
+  if (!wasInContacts) {
+    throw new AppError(400, 'User is not in your contacts')
+  }
+
+  user.contacts = user.contacts.filter((id) => !id.equals(contactId))
+  await user.save()
 }
