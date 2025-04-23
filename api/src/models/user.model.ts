@@ -63,10 +63,6 @@ const userSchema = new Schema(
     },
     contacts: createUniqueArrayField('User'),
     blockedUsers: createUniqueArrayField('User'),
-    isOnline: {
-      type: Boolean,
-      default: false,
-    },
     lastSeen: {
       type: Date,
       default: null,
@@ -87,7 +83,7 @@ const userSchema = new Schema(
 
 // Indexes for search, sort, and online user tracking optimizations
 userSchema.index({ createdAt: -1 })
-userSchema.index({ isOnline: 1, lastSeen: -1 })
+userSchema.index({ lastSeen: -1 })
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {

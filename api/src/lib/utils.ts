@@ -58,7 +58,6 @@ export function sanitizeUser(user: UserDoc): SafeUser {
     fullname: user.fullname,
     profilePic: user.profilePic,
     bio: user.bio,
-    isOnline: user.isOnline,
     lastSeen: user.lastSeen,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
@@ -71,7 +70,6 @@ export function sanitizeUserMinimal(user: UserDoc): MinimalUser {
     username: user.username,
     fullname: user.fullname,
     profilePic: user.profilePic,
-    isOnline: user.isOnline,
   }
 }
 
@@ -83,7 +81,6 @@ export function sanitizeUserProfile(user: UserDoc): PublicProfileUser {
     bio: user.bio,
     profilePic: user.profilePic,
     lastSeen: user.lastSeen,
-    isOnline: user.isOnline,
   }
 }
 

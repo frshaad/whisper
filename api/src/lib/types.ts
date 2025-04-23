@@ -3,7 +3,6 @@ export type MinimalUser = {
   username: string
   fullname: string
   profilePic: string
-  isOnline: boolean
 }
 
 export type PublicProfileUser = MinimalUser & {
