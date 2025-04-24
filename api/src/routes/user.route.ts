@@ -8,6 +8,7 @@ import {
   getBlockedUsers,
   getUserProfile,
   removeContact,
+  searchUser,
   unblockUser,
   updateUserInfo,
   uploadProfilePic,
@@ -18,7 +19,7 @@ const router = Router()
 
 router.use(authMiddleware)
 
-// router.get('/search', searchUser)
+router.get('/search', searchUser)
 
 router.get('/profile', getUserProfile)
 router.put('/profile', updateUserInfo)

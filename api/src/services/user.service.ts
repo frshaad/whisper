@@ -2,7 +2,10 @@ import type { Types } from 'mongoose'
 
 import cloudinary from '@/lib/cloudinary'
 import { AppError } from '@/lib/errors'
-import type { UpdateUserInfoObj } from '@/lib/zod-schemas/user.zod'
+import type {
+  SearchQueryParams,
+  UpdateUserInfoObj,
+} from '@/lib/zod-schemas/user.zod'
 import { User, type UserDoc } from '@/models/user.model'
 
 export async function updateUserInfoService(
@@ -182,4 +185,17 @@ export async function unblockUserService(
 
   user.blockedUsers = newBlocked
   await user.save()
+}
+
+// ========================
+// ===== Search User ======
+// ========================
+export async function searchQueryService({ limit, q }: SearchQueryParams) {
+  const regex = new RegExp(q, 'i')
+
+  return await User.find({
+    $or: [{ username: { $regex: regex } }, { fullname: { $regex: regex } }],
+  })
+    .select('username fullname profilePic')
+    .limit(limit)
 }

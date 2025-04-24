@@ -9,6 +9,7 @@ import {
 } from '@/lib/utils'
 import { passwordSchema } from '@/lib/zod-schemas'
 import {
+  searchUserQuerySchema,
   updateProfilePicSchema,
   updateUserInfoSchema,
 } from '@/lib/zod-schemas/user.zod'
@@ -20,6 +21,7 @@ import {
   getAllContactsService,
   getBlockedUsersService,
   removeContactService,
+  searchQueryService,
   unblockUserService,
   updateProfilePicService,
   updateUserInfoService,
@@ -159,6 +161,24 @@ export async function unblockUser(req: Request, res: Response) {
     await unblockUserService(user._id, targetUserId)
 
     res.status(200).json({ success: true })
+  } catch (error) {
+    handleError(error, res)
+  }
+}
+
+// ========================
+// ===== Search User ======
+// ========================
+export async function searchUser(req: Request, res: Response) {
+  try {
+    const parsedQuery = searchUserQuerySchema.parse(req.query)
+
+    const searchResults = await searchQueryService(parsedQuery)
+
+    res.status(200).json({
+      success: true,
+      data: searchResults,
+    })
   } catch (error) {
     handleError(error, res)
   }
