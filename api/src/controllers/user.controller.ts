@@ -173,12 +173,9 @@ export async function searchUser(req: Request, res: Response) {
   try {
     const parsedQuery = searchUserQuerySchema.parse(req.query)
 
-    const searchResults = await searchQueryService(parsedQuery)
+    const users = await searchQueryService(parsedQuery)
 
-    res.status(200).json({
-      success: true,
-      data: searchResults,
-    })
+    res.status(200).json({ success: true, data: users })
   } catch (error) {
     handleError(error, res)
   }

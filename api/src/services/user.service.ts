@@ -2,6 +2,7 @@ import type { Types } from 'mongoose'
 
 import cloudinary from '@/lib/cloudinary'
 import { AppError } from '@/lib/errors'
+import { escapeRegex } from '@/lib/helpers'
 import type {
   SearchQueryParams,
   UpdateUserInfoObj,
@@ -191,10 +192,13 @@ export async function unblockUserService(
 // ===== Search User ======
 // ========================
 export async function searchQueryService({ limit, q }: SearchQueryParams) {
-  const regex = new RegExp(q, 'i')
+  const safeRegex = new RegExp('^' + escapeRegex(q), 'i') // prefix match only
 
   return await User.find({
-    $or: [{ username: { $regex: regex } }, { fullname: { $regex: regex } }],
+    $or: [
+      { username: { $regex: safeRegex } },
+      { fullname: { $regex: safeRegex } },
+    ],
   })
     .select('username fullname profilePic')
     .limit(limit)

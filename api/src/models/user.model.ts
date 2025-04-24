@@ -82,6 +82,7 @@ const userSchema = new Schema(
 )
 
 // Indexes for search, sort, and online user tracking optimizations
+userSchema.index({ fullname: 1 })
 userSchema.index({ createdAt: -1 })
 userSchema.index({ lastSeen: -1 })
 

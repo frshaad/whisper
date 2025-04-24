@@ -14,3 +14,8 @@ export function createUniqueArrayField(ref: string) {
     },
   }
 }
+
+// to avoid malicious regex injection
+export function escapeRegex(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // escape regex control chars
+}
