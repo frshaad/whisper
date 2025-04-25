@@ -1,26 +1,34 @@
+import { isValidObjectId } from 'mongoose'
 import sanitizeHtml from 'sanitize-html'
 import z from 'zod'
 
 import { MAX_MESSAGE_LENGTH } from '@/lib/constants'
 
-export const messageSchema = z
-  .object({
-    text: z
-      .string()
-      .trim()
-      .max(MAX_MESSAGE_LENGTH, {
-        message: `Message cannot exceed ${MAX_MESSAGE_LENGTH} characters`,
-      })
-      .optional()
-      .transform((val) =>
-        val
-          ? sanitizeHtml(val, { allowedTags: [], allowedAttributes: {} })
-          : undefined,
-      ),
-    image: z.string().trim().url('Invalid image URL').optional(),
-  })
-  .refine(({ image, text }) => Boolean(text || image), {
+const rawMessageContentSchema = z.object({
+  text: z.string().trim().max(MAX_MESSAGE_LENGTH).optional(),
+  image: z.string().trim().url('Invalid image URL').optional(),
+})
+
+export const messageContentSchema = rawMessageContentSchema
+  .transform(({ text, image }) => ({
+    text: text
+      ? sanitizeHtml(text, { allowedTags: [], allowedAttributes: {} }).trim()
+      : undefined,
+    image,
+  }))
+  .refine(({ text, image }) => Boolean(text || image), {
     message: 'Either text or image is required',
   })
 
-export type MessageContent = z.infer<typeof messageSchema>
+export const createMessageSchema = rawMessageContentSchema
+  .extend({
+    receiverId: z.string().refine(isValidObjectId, {
+      message: 'Invalid receiver ID',
+    }),
+  })
+  .refine(({ text, image }) => Boolean(text || image), {
+    message: 'Either text or image is required',
+  })
+
+export type MessageContent = z.infer<typeof messageContentSchema>
+export type CreateMessageInput = z.infer<typeof createMessageSchema>
