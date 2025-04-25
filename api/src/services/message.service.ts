@@ -1,7 +1,7 @@
 import { Types } from 'mongoose'
 
 import cloudinary from '@/lib/cloudinary'
-import { type MessageContent } from '@/lib/zod-schemas/message.zod'
+import { type CreateMessageInput } from '@/lib/zod-schemas/message.zod'
 import { Message } from '@/models/message.model'
 
 export async function getChatHistoryService(
@@ -19,7 +19,7 @@ export async function getChatHistoryService(
 export async function sendMessageService(
   receiverId: Types.ObjectId,
   authUserId: Types.ObjectId,
-  messageData: MessageContent,
+  messageData: CreateMessageInput,
 ) {
   const { image, text } = messageData
 
