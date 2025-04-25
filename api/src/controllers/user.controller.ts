@@ -4,7 +4,7 @@ import { AppError, handleError } from '@/lib/errors'
 import {
   requireUser,
   sanitizeUser,
-  validateId,
+  validateObjectId,
   verifyPassword,
 } from '@/lib/utils'
 import { passwordSchema } from '@/lib/zod-schemas'
@@ -102,7 +102,7 @@ export async function getAllContacts(req: Request, res: Response) {
 
 export async function addContact(req: Request, res: Response) {
   try {
-    const constactId = validateId(req.params.userId)
+    const constactId = validateObjectId(req.params.userId)
     const user = requireUser(req)
 
     await addContactService(user._id, constactId)
@@ -115,7 +115,7 @@ export async function addContact(req: Request, res: Response) {
 
 export async function removeContact(req: Request, res: Response) {
   try {
-    const constactId = validateId(req.params.userId)
+    const constactId = validateObjectId(req.params.userId)
     const user = requireUser(req)
 
     await removeContactService(user._id, constactId)
@@ -142,7 +142,7 @@ export async function getBlockedUsers(req: Request, res: Response) {
 
 export async function blockUser(req: Request, res: Response) {
   try {
-    const targetUserId = validateId(req.params.userId)
+    const targetUserId = validateObjectId(req.params.userId)
     const user = requireUser(req)
 
     await blockUserService(user._id, targetUserId)
@@ -155,7 +155,7 @@ export async function blockUser(req: Request, res: Response) {
 
 export async function unblockUser(req: Request, res: Response) {
   try {
-    const targetUserId = validateId(req.params.userId)
+    const targetUserId = validateObjectId(req.params.userId)
     const user = requireUser(req)
 
     await unblockUserService(user._id, targetUserId)

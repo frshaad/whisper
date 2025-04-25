@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import type { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { Types } from 'mongoose'
+import { isValidObjectId, Types } from 'mongoose'
 
 import { env } from '@/lib/env'
 import { AppError } from '@/lib/errors'
@@ -48,14 +48,20 @@ export function generateToken(userId: Types.ObjectId, res: Response) {
   })
 }
 
-export function validateId(
-  input: string | number | Types.ObjectId,
-): Types.ObjectId {
-  if (!Types.ObjectId.isValid(input)) {
-    throw new AppError(400, 'Invalid user ID')
+export function validateObjectId(input: unknown): Types.ObjectId {
+  if (
+    typeof input == 'string' ||
+    typeof input == 'number' ||
+    input instanceof Types.ObjectId
+  ) {
+    if (!isValidObjectId(input)) {
+      throw new AppError(400, 'Invalid ID')
+    }
+
+    return input instanceof Types.ObjectId ? input : new Types.ObjectId(input)
   }
-  const parsedId = new Types.ObjectId(input)
-  return parsedId
+
+  throw new AppError(400, 'ID must be a valid string or ObjectId')
 }
 
 export function sanitizeUser(user: UserDoc): SafeUser {
