@@ -5,12 +5,8 @@ import { isValidObjectId, Types } from 'mongoose'
 
 import { env } from '@/lib/env'
 import { AppError } from '@/lib/errors'
-import type {
-  MinimalUser,
-  PublicProfileUser,
-  SafeUser,
-  SafeUserWithToken,
-} from '@/lib/types'
+import type { SafeUser, SanitizedMessage } from '@/lib/types'
+import type { MessageDoc } from '@/models/message.model'
 import { User, type UserDoc } from '@/models/user.model'
 
 export function requireUser(req: Request): UserDoc {
@@ -77,32 +73,44 @@ export function sanitizeUser(user: UserDoc): SafeUser {
   }
 }
 
-export function sanitizeUserMinimal(user: UserDoc): MinimalUser {
-  return {
-    id: user._id.toString(),
-    username: user.username,
-    fullname: user.fullname,
-    profilePic: user.profilePic,
-  }
-}
+// export function sanitizeUserMinimal(user: UserDoc): MinimalUser {
+//   return {
+//     id: user._id.toString(),
+//     username: user.username,
+//     fullname: user.fullname,
+//     profilePic: user.profilePic,
+//   }
+// }
 
-export function sanitizeUserProfile(user: UserDoc): PublicProfileUser {
-  return {
-    id: user._id.toString(),
-    username: user.username,
-    fullname: user.fullname,
-    bio: user.bio,
-    profilePic: user.profilePic,
-    lastSeen: user.lastSeen,
-  }
-}
+// export function sanitizeUserProfile(user: UserDoc): PublicProfileUser {
+//   return {
+//     id: user._id.toString(),
+//     username: user.username,
+//     fullname: user.fullname,
+//     bio: user.bio,
+//     profilePic: user.profilePic,
+//     lastSeen: user.lastSeen,
+//   }
+// }
 
-export function sanitizeUserWithToken(
-  user: UserDoc,
-  token: string,
-): SafeUserWithToken {
+// export function sanitizeUserWithToken(
+//   user: UserDoc,
+//   token: string,
+// ): SafeUserWithToken {
+//   return {
+//     ...sanitizeUser(user),
+//     token,
+//   }
+// }
+
+export function sanitizeMessage(message: MessageDoc): SanitizedMessage {
   return {
-    ...sanitizeUser(user),
-    token,
+    _id: message._id.toString(),
+    senderId: message.senderId.toString(),
+    receiverId: message.receiverId.toString(),
+    text: message.text,
+    image: message.image,
+    readStatus: message.readStatus,
+    createdAt: message.createdAt,
   }
 }
