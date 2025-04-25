@@ -1,7 +1,7 @@
 import { Types } from 'mongoose'
 
 import cloudinary from '@/lib/cloudinary'
-import { type CreateMessageInput } from '@/lib/zod-schemas/message.zod'
+import type { MessageContent } from '@/lib/zod-schemas/message.zod'
 import { Message } from '@/models/message.model'
 
 type ChatHistoryParams = {
@@ -9,6 +9,12 @@ type ChatHistoryParams = {
   chatPartnerId: Types.ObjectId
   cursor: Date | null
   limit: number
+}
+
+type SendMessageParams = {
+  authUserId: Types.ObjectId
+  receiverId: Types.ObjectId
+  messageData: MessageContent
 }
 
 export async function getMessagesWithUserService({
@@ -32,23 +38,22 @@ export async function getMessagesWithUserService({
     .lean()
 }
 
-export async function sendMessageService(
-  receiverId: Types.ObjectId,
-  authUserId: Types.ObjectId,
-  messageData: CreateMessageInput,
-) {
-  const { image, text } = messageData
-
+export async function sendMessageService({
+  authUserId,
+  receiverId,
+  messageData,
+}: SendMessageParams) {
   let imageUrl: string | undefined
-  if (image) {
-    const uploadResponse = await cloudinary.uploader.upload(image)
+
+  if (messageData.image) {
+    const uploadResponse = await cloudinary.uploader.upload(messageData.image)
     imageUrl = uploadResponse.secure_url
   }
 
   const newMessage = await Message.create({
     senderId: authUserId,
     receiverId,
-    text,
+    text: messageData.text,
     image: imageUrl,
   })
 
