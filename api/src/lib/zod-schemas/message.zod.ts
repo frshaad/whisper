@@ -32,3 +32,8 @@ export const createMessageSchema = rawMessageContentSchema
 
 export type MessageContent = z.infer<typeof messageContentSchema>
 export type CreateMessageInput = z.infer<typeof createMessageSchema>
+
+export const getMessagesSchema = z.object({
+  cursor: z.string().datetime().optional(),
+  limit: z.coerce.number().min(1).max(100).optional().default(20),
+})

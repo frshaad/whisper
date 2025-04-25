@@ -4,16 +4,32 @@ import cloudinary from '@/lib/cloudinary'
 import { type CreateMessageInput } from '@/lib/zod-schemas/message.zod'
 import { Message } from '@/models/message.model'
 
-export async function getChatHistoryService(
-  userId: Types.ObjectId,
-  authUserId: Types.ObjectId,
-) {
-  return await Message.find({
+type ChatHistoryParams = {
+  authUserId: Types.ObjectId
+  chatPartnerId: Types.ObjectId
+  cursor: Date | null
+  limit: number
+}
+
+export async function getMessagesWithUserService({
+  authUserId,
+  chatPartnerId,
+  cursor,
+  limit,
+}: ChatHistoryParams) {
+  const filter = {
     $or: [
-      { senderId: authUserId, receiverId: userId },
-      { senderId: userId, receiverId: authUserId },
+      { senderId: authUserId, receiverId: chatPartnerId },
+      { senderId: chatPartnerId, receiverId: authUserId },
     ],
-  })
+    ...(cursor && { createdAt: { $lt: cursor } }),
+  }
+
+  return await Message.find(filter)
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .select('text image senderId receiverId createdAt readStatus _id')
+    .lean()
 }
 
 export async function sendMessageService(
