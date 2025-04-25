@@ -1,4 +1,9 @@
-import { type InferSchemaType, model, Schema } from 'mongoose'
+import {
+  type HydratedDocument,
+  type InferSchemaType,
+  model,
+  Schema,
+} from 'mongoose'
 
 const messageSchema = new Schema(
   {
@@ -27,4 +32,4 @@ const messageSchema = new Schema(
 messageSchema.index({ senderId: 1, receiverId: 1, createdAt: -1 })
 
 export const Message = model('Message', messageSchema)
-export type MessageDoc = InferSchemaType<typeof messageSchema>
+export type MessageDoc = HydratedDocument<InferSchemaType<typeof messageSchema>>
