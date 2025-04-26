@@ -11,13 +11,11 @@ const messageSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
-      index: true,
     },
     receiverId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
-      index: true,
     },
     text: { type: String, trim: true, maxlength: 2000 },
     image: { type: String },
@@ -30,6 +28,9 @@ const messageSchema = new Schema(
 )
 
 messageSchema.index({ senderId: 1, receiverId: 1, createdAt: -1 })
+messageSchema.index({ senderId: 1 })
+messageSchema.index({ receiverId: 1 })
+messageSchema.index({ createdAt: -1 })
 
 export const Message = model('Message', messageSchema)
 export type MessageDoc = HydratedDocument<InferSchemaType<typeof messageSchema>>
