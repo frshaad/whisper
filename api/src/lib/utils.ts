@@ -5,7 +5,7 @@ import { isValidObjectId, Types } from 'mongoose'
 
 import { env } from '@/lib/env'
 import { AppError } from '@/lib/errors'
-import type { SafeUser, SanitizedMessage } from '@/lib/types'
+import type { ChatListItem, SafeUser, SanitizedMessage } from '@/lib/types'
 import type { MessageDoc } from '@/models/message.model'
 import { User, type UserDoc } from '@/models/user.model'
 
@@ -112,5 +112,18 @@ export function sanitizeMessage(message: MessageDoc): SanitizedMessage {
     image: message.image,
     readStatus: message.readStatus,
     createdAt: message.createdAt,
+  }
+}
+
+export function sanitizeChatListItem(chat: ChatListItem) {
+  return {
+    userId: chat.userId.toString(),
+    fullname: chat.fullname,
+    username: chat.username,
+    profileImage: chat.profileImage || null,
+    lastMessageText: chat.lastMessageText || null,
+    lastMessageImage: chat.lastMessageImage || null,
+    lastMessageCreatedAt: chat.lastMessageCreatedAt,
+    lastMessageReadStatus: chat.lastMessageReadStatus,
   }
 }

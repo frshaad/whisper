@@ -1,3 +1,5 @@
+import type { Types } from 'mongoose'
+
 export type MinimalUser = {
   id: string
   username: string
@@ -27,4 +29,15 @@ export type SanitizedMessage = {
   image?: string | null
   readStatus: boolean
   createdAt: Date
+}
+
+export type ChatListItem = {
+  userId: Types.ObjectId
+  fullname: string
+  username: string
+  profileImage?: string
+  lastMessageText?: string
+  lastMessageImage?: string
+  lastMessageCreatedAt: Date
+  lastMessageReadStatus: boolean
 }
