@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 
 import cloudinary from '@/lib/cloudinary'
+import { AppError } from '@/lib/errors'
 import type { MessageContent } from '@/lib/zod-schemas/message.zod'
 import { Message } from '@/models/message.model'
 
@@ -60,4 +61,21 @@ export async function sendMessageService({
   // Realtime functionality => socket.io
 
   return newMessage
+}
+
+export async function deleteMessageService(
+  authUserId: Types.ObjectId,
+  messageId: Types.ObjectId,
+) {
+  const message = await Message.findById(messageId)
+
+  if (!message) {
+    throw new AppError(404, "The message doesn't exist")
+  }
+
+  if (message.senderId.toString() != authUserId.toString()) {
+    throw new AppError(403, 'You only can delete your messages.')
+  }
+
+  await message.deleteOne()
 }

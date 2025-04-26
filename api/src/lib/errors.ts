@@ -1,7 +1,7 @@
 import type { Response } from 'express'
 import { ZodError } from 'zod'
 
-type ErrorStatusCode = 400 | 401 | 404
+type ErrorStatusCode = 400 | 401 | 403 | 404
 
 export class AppError extends Error {
   constructor(

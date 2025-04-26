@@ -8,6 +8,7 @@ import {
   messageContentSchema,
 } from '@/lib/zod-schemas/message.zod'
 import {
+  deleteMessageService,
   getMessagesWithUserService,
   sendMessageService,
 } from '@/services/message.service'
@@ -56,6 +57,19 @@ export async function sendMessage(req: Request, res: Response) {
     })
 
     res.status(201).json({ success: true, data: sanitizeMessage(message) })
+  } catch (error) {
+    handleError(error, res)
+  }
+}
+
+export async function deleteMessage(req: Request, res: Response) {
+  try {
+    const authUserId = requireUser(req)._id
+    const messageId = validateObjectId(req.params.messageId)
+
+    await deleteMessageService(authUserId, messageId)
+
+    res.status(200).json({ success: true })
   } catch (error) {
     handleError(error, res)
   }

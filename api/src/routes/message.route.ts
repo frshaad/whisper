@@ -1,6 +1,7 @@
 import { Router } from 'express'
 
 import {
+  deleteMessage,
   getMessagesWithUser,
   sendMessage,
 } from '@/controllers/message.controller'
@@ -12,6 +13,6 @@ router.use(authMiddleware)
 
 router.get('/:userId', getMessagesWithUser)
 router.post('/:receiverId', sendMessage)
-// router.delete('/:messageId', deleteMessage)
+router.delete('/:messageId', deleteMessage)
 
 export default router
