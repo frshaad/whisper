@@ -14,10 +14,10 @@ import {
   updateUserInfoSchema,
 } from '@/lib/zod-schemas/user.zod'
 import type { UserDoc } from '@/models/user.model'
-import { deleteAccountService } from '@/services/auth.service'
 import {
   addContactService,
   blockUserService,
+  deleteAccountService,
   getAllContactsService,
   getBlockedUsersService,
   removeContactService,

@@ -1,5 +1,3 @@
-import type { Types } from 'mongoose'
-
 import { AppError } from '@/lib/errors'
 import { User, type UserDoc } from '@/models/user.model'
 
@@ -50,8 +48,4 @@ export async function changePasswordService(
 
   existingUser.password = newPassword
   await existingUser.save()
-}
-
-export async function deleteAccountService(userId: Types.ObjectId) {
-  await User.findByIdAndDelete(userId)
 }

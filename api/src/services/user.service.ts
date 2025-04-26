@@ -73,6 +73,10 @@ export async function updateProfilePicService(
   return updatedUser
 }
 
+export async function deleteAccountService(userId: Types.ObjectId) {
+  await User.findByIdAndDelete(userId)
+}
+
 // =====================
 // ===== Contacts ======
 // =====================
