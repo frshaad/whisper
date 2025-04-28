@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router'
 
-import ThemeProvider from '@/components/theme-provider'
+import ModeProvider from '@/components/mode-provider'
 import AuthLayout from '@/pages/auth-layout'
 import Home from '@/pages/home'
 import Login from '@/pages/login'
@@ -10,7 +10,7 @@ import SignUp from '@/pages/signup'
 
 export default function App() {
   return (
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <ModeProvider defaultMode="system" storageKey="vite-ui-mode">
       <div>
         <Routes>
           <Route index element={<Home />} />
@@ -23,6 +23,6 @@ export default function App() {
           </Route>
         </Routes>
       </div>
-    </ThemeProvider>
+    </ModeProvider>
   )
 }
