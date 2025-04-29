@@ -35,7 +35,6 @@ dist/
 
 # Gatsby files
 .cache/
-public/
 
 # vuepress build output
 .vuepress/dist
@@ -49,7 +48,7 @@ public/
 # Docker
 docker-compose.override.yml
 Dockerfile
-Dockerfile.* 
+Dockerfile.*
 .dockerignore
 
 # Coverage directory used by tools like istanbul
@@ -98,7 +97,6 @@ dist/
 
 # Gatsby files
 .cache/
-public/
 
 # vuepress build output
 .vuepress/dist
