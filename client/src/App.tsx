@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router'
 
 import ModeProvider from '@/components/mode-provider'
+import { Toaster } from '@/components/ui/sonner'
 import AuthLayout from '@/pages/auth-layout'
 import Home from '@/pages/home'
 import Login from '@/pages/login'
@@ -11,7 +12,7 @@ import SignUp from '@/pages/signup'
 export default function App() {
   return (
     <ModeProvider defaultMode="system" storageKey="vite-ui-mode">
-      <div>
+      <main>
         <Routes>
           <Route index element={<Home />} />
           <Route path="settings" element={<Settings />} />
@@ -22,7 +23,8 @@ export default function App() {
             <Route path="signup" element={<SignUp />} />
           </Route>
         </Routes>
-      </div>
+      </main>
+      <Toaster />
     </ModeProvider>
   )
 }
