@@ -4,6 +4,7 @@ import { AppError, handleError } from '@/lib/errors'
 import {
   requireUser,
   sanitizeUser,
+  sanitizeUserMinimal,
   validateObjectId,
   verifyPassword,
 } from '@/lib/utils'
@@ -175,7 +176,9 @@ export async function searchUser(req: Request, res: Response) {
 
     const users = await searchQueryService(parsedQuery)
 
-    res.status(200).json({ success: true, data: users })
+    res
+      .status(200)
+      .json({ success: true, data: users.map(sanitizeUserMinimal) })
   } catch (error) {
     handleError(error, res)
   }

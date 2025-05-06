@@ -3,6 +3,7 @@ import type { Types } from 'mongoose'
 import cloudinary from '@/lib/cloudinary'
 import { AppError } from '@/lib/errors'
 import { escapeRegex } from '@/lib/helpers'
+import type { MinimalUser } from '@/lib/types'
 import type {
   SearchQueryParams,
   UpdateUserInfoObj,
@@ -83,7 +84,9 @@ export async function deleteAccountService(userId: Types.ObjectId) {
 
 export async function getAllContactsService(userId: Types.ObjectId) {
   const user = await User.findById(userId)
-    .populate('contacts', 'username fullname profilePic _id')
+    .populate<{
+      contacts: MinimalUser[]
+    }>('contacts', 'username fullname profilePic _id')
     .select('contacts blockedUsers')
 
   if (!user) {
@@ -91,10 +94,11 @@ export async function getAllContactsService(userId: Types.ObjectId) {
   }
 
   const blockedIds = new Set(user.blockedUsers.map(String))
-
-  return user.contacts.filter(
-    (contact) => !blockedIds.has(contact._id.toString()),
+  const contacts = user.contacts.filter(
+    (contact) => !blockedIds.has(contact.id.toString()),
   )
+
+  return contacts
 }
 
 export async function addContactService(
