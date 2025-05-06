@@ -5,7 +5,12 @@ import { isValidObjectId, Types } from 'mongoose'
 
 import { env } from '@/lib/env'
 import { AppError } from '@/lib/errors'
-import type { ChatListItem, SafeUser, SanitizedMessage } from '@/lib/types'
+import type {
+  ChatListItem,
+  MinimalUser,
+  SafeUser,
+  SanitizedMessage,
+} from '@/lib/types'
 import type { MessageDoc } from '@/models/message.model'
 import { User, type UserDoc } from '@/models/user.model'
 
@@ -73,14 +78,27 @@ export function sanitizeUser(user: UserDoc): SafeUser {
   }
 }
 
-// export function sanitizeUserMinimal(user: UserDoc): MinimalUser {
-//   return {
-//     id: user._id.toString(),
-//     username: user.username,
-//     fullname: user.fullname,
-//     profilePic: user.profilePic,
-//   }
-// }
+export function sanitizeUserWithContacts(user: UserDoc): SafeUser {
+  return {
+    id: user._id.toString(),
+    username: user.username,
+    fullname: user.fullname,
+    profilePic: user.profilePic,
+    bio: user.bio,
+    lastSeen: user.lastSeen,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  }
+}
+
+export function sanitizeUserMinimal(user: UserDoc): MinimalUser {
+  return {
+    id: user._id.toString(),
+    username: user.username,
+    fullname: user.fullname,
+    profilePic: user.profilePic,
+  }
+}
 
 // export function sanitizeUserProfile(user: UserDoc): PublicProfileUser {
 //   return {
