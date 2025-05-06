@@ -405,3 +405,233 @@
   "message": "Something went wrong. Please try again later."
 }
 ```
+
+## [GET] `/api/v1/user/search?q=&limit=`
+
+**Description**: search for a user.
+
+### Successful Response (200)
+
+```json
+{
+  "success": true,
+  "data": MinimalUser[]
+}
+```
+
+### Possible Errors
+
+#### 1. Invalid Input (Zod)
+
+```json
+{
+  "success": false,
+  "message": "Invalid input",
+  "errors": [
+    {
+      "field": "...",
+      "message": "..."
+    }
+    // Can have multiple field errors
+  ]
+}
+```
+
+#### 2. AppError
+
+```json
+{
+  "success": false,
+  "message": "..."
+}
+```
+
+#### 3. Unexpected Server Error (Catch-all)
+
+```json
+{
+  "success": false,
+  "message": "Something went wrong. Please try again later."
+}
+```
+
+## [GET] `/api/v1/user/profile`
+
+**Description**: get auth user's profile
+
+### Successful Response (200)
+
+```json
+{
+  "success": true,
+  "data": SafeUser
+}
+```
+
+### Possible Errors
+
+#### 1. AppError
+
+```json
+{
+  "success": false,
+  "message": "..."
+}
+```
+
+#### 2. Unexpected Server Error (Catch-all)
+
+```json
+{
+  "success": false,
+  "message": "Something went wrong. Please try again later."
+}
+```
+
+## [PUT] `/api/v1/user/profile`
+
+**Description**: update auth user profile info.
+
+### Request Body
+
+```ts
+{
+  fullname?: string | undefined;
+  bio?: string | undefined;
+}
+```
+
+### Successful Response (200)
+
+```json
+{
+  "success": true,
+  "data": SafeUser
+}
+```
+
+### Possible Errors
+
+#### 1. Invalid Input (Zod)
+
+```json
+{
+  "success": false,
+  "message": "Invalid input",
+  "errors": [
+    {
+      "field": "...",
+      "message": "..."
+    }
+    // Can have multiple field errors
+  ]
+}
+```
+
+#### 2. AppError
+
+```json
+{
+  "success": false,
+  "message": "..."
+}
+```
+
+#### 3. Unexpected Server Error (Catch-all)
+
+```json
+{
+  "success": false,
+  "message": "Something went wrong. Please try again later."
+}
+```
+
+## [PUT] `/api/v1/user/profile-picture`
+
+**Description**: update auth user profile picture.
+
+### Request Body
+
+```ts
+{
+  profilePic: string;
+}
+```
+
+### Successful Response (200)
+
+```json
+{
+  "success": true,
+  "data": SafeUser
+}
+```
+
+### Possible Errors
+
+#### 1. Invalid Input (Zod)
+
+```json
+{
+  "success": false,
+  "message": "Invalid input",
+  "errors": [
+    {
+      "field": "...",
+      "message": "..."
+    }
+    // Can have multiple field errors
+  ]
+}
+```
+
+#### 2. AppError
+
+```json
+{
+  "success": false,
+  "message": "..."
+}
+```
+
+#### 3. Unexpected Server Error (Catch-all)
+
+```json
+{
+  "success": false,
+  "message": "Something went wrong. Please try again later."
+}
+```
+
+## [GET] `/api/v1/user/contacts`
+
+**Description**: get auth user's contacts list.
+
+### Successful Response (200)
+
+```json
+{
+  "success": true,
+  "data": MinimalUser[]
+}
+```
+
+### Possible Errors
+
+#### 1. AppError
+
+```json
+{
+  "success": false,
+  "message": "..."
+}
+```
+
+#### 2. Unexpected Server Error (Catch-all)
+
+```json
+{
+  "success": false,
+  "message": "Something went wrong. Please try again later."
+}
+```
