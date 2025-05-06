@@ -17,10 +17,6 @@ export type SafeUser = PublicProfileUser & {
   updatedAt: Date
 }
 
-// export type SafeUserWithToken = SafeUser & {
-//   token: string
-// }
-
 export type SanitizedMessage = {
   _id: string
   senderId: string

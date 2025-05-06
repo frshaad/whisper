@@ -17,7 +17,7 @@ export class AppError extends Error {
 export function handleError(error: unknown, res: Response) {
   if (error instanceof ZodError) {
     return res.status(400).json({
-      status: 'failed',
+      success: false,
       message: 'Invalid input',
       errors: error.errors.map((e) => ({
         field: e.path.join('.'),
@@ -28,14 +28,14 @@ export function handleError(error: unknown, res: Response) {
 
   if (error instanceof AppError) {
     return res.status(error.statusCode).json({
-      status: 'failed',
+      success: false,
       message: error.message,
       ...(error.errors && { errors: error.errors }),
     })
   }
 
   return res.status(500).json({
-    status: 'failed',
+    success: false,
     message: 'Something went wrong. Please try again later.',
   })
 }
