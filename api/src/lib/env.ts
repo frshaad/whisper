@@ -20,6 +20,7 @@ const environmentSchema = z.object({
     .pipe(z.number().positive()),
   DB_URI: z.string().min(1, { message: 'Database URI is required' }).url(),
   JWT_SECRET: z.string().min(1, { message: 'JWT Secret Key is required' }),
+  CLIENT_URL: z.string().url(),
   CLOUDINARY_CLOUD_NAME: z
     .string()
     .min(1, { message: 'Cloudinary Cloud Name is required' }),
